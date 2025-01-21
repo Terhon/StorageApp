@@ -7,14 +7,16 @@ public class TestController : Controller
 {
     // 
     // GET: /Test/
-    public string Index()
+    public IActionResult Index()
     {
-        return "This is my default action...";
+        return View();
     }
     // 
     // GET: /Test/Welcome/ 
-    public string Welcome(string name, int id = 1)
+    public IActionResult Welcome(string name, int num = 1)
     {
-        return HtmlEncoder.Default.Encode($"Hello {name}, ID: {id}");
+        ViewData["Message"] = "Hello " + name;
+        ViewData["Num"] = num;
+        return View();
     }
 }
