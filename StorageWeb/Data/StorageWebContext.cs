@@ -1,0 +1,19 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using StorageWeb.Models;
+
+namespace StorageWeb.Data
+{
+    public class StorageWebContext : DbContext
+    {
+        public StorageWebContext (DbContextOptions<StorageWebContext> options)
+            : base(options)
+        {
+        }
+
+        public DbSet<StorageWeb.Models.Item> Item { get; set; } = default!;
+    }
+}

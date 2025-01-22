@@ -1,4 +1,10 @@
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using StorageWeb.Data;
+
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddDbContext<StorageWebContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("StorageWebContext") ?? throw new InvalidOperationException("Connection string 'StorageWebContext' not found.")));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
