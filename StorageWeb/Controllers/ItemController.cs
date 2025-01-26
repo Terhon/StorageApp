@@ -20,11 +20,41 @@ namespace StorageWeb.Controllers
         }
 
         // GET: Item
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string itemType, string searchString)
         {
-            return View(await _context.Item.ToListAsync());
+            if (_context.Item == null)
+            {
+                return Problem("Entity set 'StorageWebContext.Item'  is null.");
+            }
+
+            var typeQuery = _context.Item.OrderBy(m => m.Type).Select(m => m.Type);
+            var items = _context.Item.Select(i => i);
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                items = items.Where(s => s.Name!.ToUpper().Contains(searchString.ToUpper()));
+            }
+            
+            if (!string.IsNullOrEmpty(itemType))
+            {
+                items = items.Where(x => x.Type == itemType);
+            }
+
+            var itemTypeVM = new ItemTypeViewModel
+            {
+                Types = new SelectList(await typeQuery.Distinct().ToListAsync()),
+                Items = await items.ToListAsync()
+            };
+
+            return View(itemTypeVM);
         }
 
+        [HttpPost]
+        public string Index(string searchString, bool notUsed)
+        {
+            return "From [HttpPost]Index: filter on " + searchString;
+        }
+        
         // GET: Item/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -54,7 +84,7 @@ namespace StorageWeb.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,AquisitionDate,Price")] Item item)
+        public async Task<IActionResult> Create([Bind("Id,Name,AcquisitionDate,Type,Price")] Item item)
         {
             if (ModelState.IsValid)
             {
@@ -86,7 +116,7 @@ namespace StorageWeb.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,AquisitionDate,Price")] Item item)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,AcquisitionDate,Type,Price")] Item item)
         {
             if (id != item.Id)
             {

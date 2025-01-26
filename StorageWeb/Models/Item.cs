@@ -11,8 +11,10 @@ public class Item
     
     [Display(Name = "Acquisition Date")]
     [DataType(DataType.Date)] 
-    public DateTime AquisitionDate { get; set; }
+    public DateTime AcquisitionDate { get; set; }
     
     [Column(TypeName = "decimal(18, 2)")]
     public decimal Price { get; set; }
+    
+    public string? Type { get; set; }
 }
