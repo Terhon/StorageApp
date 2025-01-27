@@ -25,28 +25,32 @@ public static class SeedData
                     Name = "When Harry Met Sally",
                     AcquisitionDate = DateTime.Parse("1989-2-12"),
                     Type = "a",
-                    Price = 7.99M
+                    Price = 7.99M,
+                    Rating = "R"
                 },
                 new Item
                 {
                     Name = "Ghostbusters ",
                     AcquisitionDate = DateTime.Parse("1984-3-13"),
                     Type = "b",
-                    Price = 8.99M
+                    Price = 8.99M,
+                    Rating = "M"
                 },
                 new Item
                 {
                     Name = "Ghostbusters 2",
                     AcquisitionDate = DateTime.Parse("1986-2-23"),
                     Type = "b",
-                    Price = 9.99M
+                    Price = 9.99M,
+                    Rating = "M"
                 },
                 new Item
                 {
                     Name = "Rio Bravo",
                     AcquisitionDate = DateTime.Parse("1959-4-15"),
                     Type = "c",
-                    Price = 3.99M
+                    Price = 3.99M,
+                    Rating = "A"
                 }
             );
             context.SaveChanges();
