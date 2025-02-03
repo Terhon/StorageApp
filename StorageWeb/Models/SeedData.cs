@@ -22,35 +22,27 @@ public static class SeedData
             context.Item.AddRange(
                 new Item
                 {
-                    Name = "When Harry Met Sally",
+                    Name = "Eggs",
                     AcquisitionDate = DateTime.Parse("1989-2-12"),
-                    Type = "a",
-                    Price = 7.99M,
-                    Rating = "R"
+                    Amount = 5
                 },
                 new Item
                 {
-                    Name = "Ghostbusters ",
+                    Name = "Milk cartons",
                     AcquisitionDate = DateTime.Parse("1984-3-13"),
-                    Type = "b",
-                    Price = 8.99M,
-                    Rating = "M"
+                    Amount = 10,
                 },
                 new Item
                 {
-                    Name = "Ghostbusters 2",
+                    Name = "Banana",
                     AcquisitionDate = DateTime.Parse("1986-2-23"),
-                    Type = "b",
-                    Price = 9.99M,
-                    Rating = "M"
+                    Amount = 3,
                 },
                 new Item
                 {
-                    Name = "Rio Bravo",
+                    Name = "Apple",
                     AcquisitionDate = DateTime.Parse("1959-4-15"),
-                    Type = "c",
-                    Price = 3.99M,
-                    Rating = "A"
+                    Amount = 1,
                 }
             );
             context.SaveChanges();

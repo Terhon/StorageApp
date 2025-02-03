@@ -30,13 +30,7 @@
                 @Html.DisplayNameFor(model => model.Items![0].AcquisitionDate)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Items![0].Type)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Items![0].Price)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Items![0].Rating)
+                @Html.DisplayNameFor(model => model.Items![0].Amount)
             </th>
             <th></th>
         </tr>
@@ -51,13 +45,7 @@
                 @Html.DisplayFor(modelItem => item.AcquisitionDate)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Type)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Price)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Rating)
+                @Html.DisplayFor(modelItem => item.Amount)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

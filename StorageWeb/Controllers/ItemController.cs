@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -27,22 +23,15 @@ namespace StorageWeb.Controllers
                 return Problem("Entity set 'StorageWebContext.Item'  is null.");
             }
 
-            var typeQuery = _context.Item.OrderBy(m => m.Type).Select(m => m.Type);
             var items = _context.Item.Select(i => i);
 
             if (!string.IsNullOrEmpty(searchString))
             {
                 items = items.Where(s => s.Name!.ToUpper().Contains(searchString.ToUpper()));
             }
-            
-            if (!string.IsNullOrEmpty(itemType))
-            {
-                items = items.Where(x => x.Type == itemType);
-            }
 
             var itemTypeVM = new ItemTypeViewModel
             {
-                Types = new SelectList(await typeQuery.Distinct().ToListAsync()),
                 Items = await items.ToListAsync()
             };
 
