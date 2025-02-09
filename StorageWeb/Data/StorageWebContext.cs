@@ -14,6 +14,15 @@ namespace StorageWeb.Data
         {
         }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Recipe>()
+                .HasMany<Item>(e => e.Ingredients)
+                .WithMany();
+        }
+
         public DbSet<StorageWeb.Models.Item> Item { get; set; } = default!;
         public DbSet<StorageWeb.Models.Recipe> Recipe { get; set; } = default!;
     }
