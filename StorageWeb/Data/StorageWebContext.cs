@@ -15,5 +15,6 @@ namespace StorageWeb.Data
         }
 
         public DbSet<StorageWeb.Models.Item> Item { get; set; } = default!;
+        public DbSet<StorageWeb.Models.Recipe> Recipe { get; set; } = default!;
     }
 }

@@ -43,7 +43,7 @@ namespace StorageWeb.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Item");
+                    b.ToTable("Item", (string)null);
                 });
 #pragma warning restore 612, 618
         }
