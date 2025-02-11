@@ -16,4 +16,9 @@
       <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Views\Test\Index.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Test\Welcome.cshtml" />
+    </ItemGroup>
+
 </Project>
