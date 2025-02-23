@@ -19,6 +19,11 @@
     <ItemGroup>
       <_ContentIncludedByDefault Remove="Views\Test\Index.cshtml" />
       <_ContentIncludedByDefault Remove="Views\Test\Welcome.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Recipe\Create.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Recipe\Delete.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Recipe\Details.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Recipe\Edit.cshtml" />
+      <_ContentIncludedByDefault Remove="Views\Recipe\Index.cshtml" />
     </ItemGroup>
 
 </Project>

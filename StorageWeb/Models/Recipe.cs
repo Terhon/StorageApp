@@ -10,9 +10,10 @@ public class Recipe
     [Required]
     public string? Name { get; set; }
 
+    [DataType(DataType.MultilineText)]
     [StringLength(1000)]
     [Required]
     public string? Description { get; set; }
 
-    public List<Item> Ingredients { get; } = [];
+    public HashSet<IngredientItem> Ingredients { get; } = [];
 }

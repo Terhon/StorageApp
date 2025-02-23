@@ -8,11 +8,9 @@ public class Item
 
     [StringLength(60)]
     [Required]
-    public string? Name { get; set; }
+    public string Name { get; set; }
 
-    [Display(Name = "Acquisition Date")]
-    [DataType(DataType.Date)]
-    public DateTime AcquisitionDate { get; set; }
-    
-    public int Amount { get; set; }
+    [StringLength(20)]
+    [Required]
+    public string Unit { get; set; }
 }

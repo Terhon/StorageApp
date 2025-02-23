@@ -26,12 +26,12 @@
             <th>
                 @Html.DisplayNameFor(model => model.Items![0].Name)
             </th>
-            <th>
+            @*<th>
                 @Html.DisplayNameFor(model => model.Items![0].AcquisitionDate)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Items![0].Amount)
-            </th>
+            </th>*@
             <th></th>
         </tr>
     </thead>
@@ -41,12 +41,12 @@
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
-            <td>
+            @*<td>
                 @Html.DisplayFor(modelItem => item.AcquisitionDate)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Amount)
-            </td>
+            </td>*@
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
                 <a asp-action="Details" asp-route-id="@item.Id">Details</a> |

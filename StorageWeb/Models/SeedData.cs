@@ -22,29 +22,52 @@ public static class SeedData
             context.Item.AddRange(
                 new Item
                 {
-                    Name = "Eggs",
-                    AcquisitionDate = DateTime.Parse("1989-2-12"),
-                    Amount = 5
+                    Name = "Egg",
+                    Unit = ""
                 },
                 new Item
                 {
-                    Name = "Milk cartons",
-                    AcquisitionDate = DateTime.Parse("1984-3-13"),
-                    Amount = 10,
-                },
-                new Item
-                {
-                    Name = "Banana",
-                    AcquisitionDate = DateTime.Parse("1986-2-23"),
-                    Amount = 3,
-                },
-                new Item
-                {
-                    Name = "Apple",
-                    AcquisitionDate = DateTime.Parse("1959-4-15"),
-                    Amount = 1,
+                    Name = "Milk",
+                    Unit = "l"
                 }
             );
+            context.StorageItems.AddRange(
+                new StorageItem
+                {
+                    Amount = 5,
+                    AcquisitionDate = new DateTime(2024, 3, 16),
+                    ItemId = 1
+                },
+                new StorageItem
+                {
+                    Amount = 2,
+                    AcquisitionDate = new DateTime(2023, 6, 1),
+                    ItemId = 2
+                }
+                );
+            
+            context.Recipe.AddRange(
+                new Recipe
+                {
+                    Description = "example description",
+                    Name = "example recipe"
+                });
+            
+            context.IngredientItems.AddRange(
+                new IngredientItem
+                {
+                    Amount = 7,
+                    ItemId = 1,
+                    RecipeId = 1
+                },
+                new IngredientItem
+                {
+                    Amount = 3,
+                    ItemId = 2,
+                    RecipeId = 1
+                }
+                );
+            
             context.SaveChanges();
         }
     }

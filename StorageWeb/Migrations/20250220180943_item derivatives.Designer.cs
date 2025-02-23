@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using StorageWeb.Data;
 
@@ -11,9 +12,11 @@ using StorageWeb.Data;
 namespace StorageWeb.Migrations
 {
     [DbContext(typeof(StorageWebContext))]
-    partial class StorageWebContextModelSnapshot : ModelSnapshot
+    [Migration("20250220180943_item derivatives")]
+    partial class itemderivatives
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
