@@ -25,8 +25,13 @@
             </div>
             <div class="form-group">
                 <label asp-for="Amount" class="control-label"></label>
-                <input asp-for="Amount" class="form-control" />
-                <span asp-validation-for="Amount" class="text-danger"></span>
+                <div class="input-group">
+                    <input asp-for="Amount" class="form-control" />
+                    <div class="input-group-append">
+                        <span class="input-group-text">@Html.DisplayFor(model => model.Item.Unit)</span>
+                    </div>
+                </div>
+                <span asp-validation-for="Amount" class="text-danger"></span> 
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
