@@ -15,32 +15,9 @@ namespace StorageWeb.Controllers
         }
 
         // GET: Item
-        public async Task<IActionResult> Index(string itemType, string searchString)
+        public async Task<IActionResult> Index()
         {
-            if (_context.Item == null)
-            {
-                return Problem("Entity set 'StorageWebContext.Item'  is null.");
-            }
-
-            var items = _context.Item.Select(i => i);
-
-            if (!string.IsNullOrEmpty(searchString))
-            {
-                items = items.Where(s => s.Name!.ToUpper().Contains(searchString.ToUpper()));
-            }
-
-            var itemTypeVM = new ItemTypeViewModel
-            {
-                Items = await items.ToListAsync()
-            };
-
-            return View(itemTypeVM);
-        }
-
-        [HttpPost]
-        public string Index(string searchString, bool notUsed)
-        {
-            return "From [HttpPost]Index: filter on " + searchString;
+            return View(await _context.Item.ToListAsync());
         }
         
         // GET: Item/Details/5
