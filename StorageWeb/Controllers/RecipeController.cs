@@ -1,28 +1,16 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using StorageWeb.Data;
 using StorageWeb.Models;
 
 namespace StorageWeb.Controllers
 {
-    public class RecipeController : Controller
+    public class RecipeController(StorageWebContext context) : Controller
     {
-        private readonly StorageWebContext _context;
-
-        public RecipeController(StorageWebContext context)
-        {
-            _context = context;
-        }
-
         // GET: Recipe
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Recipe.ToListAsync());
+            return View(await context.Recipe.ToListAsync());
         }
 
         // GET: Recipe/Details/5
@@ -33,7 +21,9 @@ namespace StorageWeb.Controllers
                 return NotFound();
             }
 
-            var recipe = await _context.Recipe
+            var recipe = await context.Recipe
+                .Include(r => r.Ingredients)
+                .ThenInclude(i => i.Item)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (recipe == null)
             {
@@ -58,10 +48,11 @@ namespace StorageWeb.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(recipe);
-                await _context.SaveChangesAsync();
+                context.Add(recipe);
+                await context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+
             return View(recipe);
         }
 
@@ -73,47 +64,80 @@ namespace StorageWeb.Controllers
                 return NotFound();
             }
 
-            var recipe = await _context.Recipe.FindAsync(id);
+            var recipe = await context.Recipe
+                .Include(r => r.Ingredients)
+                .ThenInclude(i => i.Item)
+                .FirstOrDefaultAsync(m => m.Id == id);
+
             if (recipe == null)
             {
                 return NotFound();
             }
+
             return View(recipe);
         }
-
-        // POST: Recipe/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        
+        // POST: Recipes/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Description")] Recipe recipe)
+        public async Task<IActionResult> Edit(int id, Recipe updatedRecipe)
         {
-            if (id != recipe.Id)
-            {
+            if (id != updatedRecipe.Id)
+                return BadRequest();
+
+            if (!ModelState.IsValid)
+                return View(updatedRecipe);
+            
+            var existingRecipe = await context.Recipe
+                .Include(r => r.Ingredients)
+                .FirstOrDefaultAsync(r => r.Id == id);
+
+            if (existingRecipe == null)
                 return NotFound();
+            
+            existingRecipe.Name = updatedRecipe.Name;
+            existingRecipe.Description = updatedRecipe.Description;
+            
+            var updatedIngredientIds = updatedRecipe.Ingredients.Select(i => i.Id).ToList();
+            var ingredientsToRemove = existingRecipe.Ingredients
+                .Where(i => !updatedIngredientIds.Contains(i.Id))
+                .ToList();
+            
+            foreach (var ingredient in ingredientsToRemove)
+            {
+                existingRecipe.Ingredients.Remove(ingredient);
+                context.IngredientItems.Remove(ingredient);
+            }
+            
+            // Add or update ingredients
+            foreach (var ingredient in updatedRecipe.Ingredients)
+            {
+                var existingIngredient = existingRecipe.Ingredients.FirstOrDefault(i => i.Id == ingredient.Id);
+                if (existingIngredient == null)
+                {
+                    existingRecipe.Ingredients.Add(ingredient);
+                }
+                else
+                {
+                    context.Entry(existingIngredient).CurrentValues.SetValues(ingredient);
+                }
             }
 
-            if (ModelState.IsValid)
+            try
             {
-                try
-                {
-                    _context.Update(recipe);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!RecipeExists(recipe.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                await context.SaveChangesAsync();
             }
-            return View(recipe);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!RecipeExists(id))
+                {
+                    return NotFound();
+                }
+
+                throw;
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Recipe/Delete/5
@@ -124,7 +148,7 @@ namespace StorageWeb.Controllers
                 return NotFound();
             }
 
-            var recipe = await _context.Recipe
+            var recipe = await context.Recipe
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (recipe == null)
             {
@@ -139,19 +163,34 @@ namespace StorageWeb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var recipe = await _context.Recipe.FindAsync(id);
+            var recipe = await context.Recipe.FindAsync(id);
             if (recipe != null)
             {
-                _context.Recipe.Remove(recipe);
+                context.Recipe.Remove(recipe);
             }
 
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool RecipeExists(int id)
         {
-            return _context.Recipe.Any(e => e.Id == id);
+            return context.Recipe.Any(e => e.Id == id);
+        }
+
+        public async Task<IActionResult> GetIngredients(string search)
+        {
+            var ingredients = await context.Item
+                .Where(i => i.Name.Contains(search))
+                .Select(i => new
+                {
+                    id = i.Id,
+                    name = i.Name,
+                    unit = i.Unit
+                })
+                .ToListAsync();
+
+            return Json(ingredients);
         }
     }
 }

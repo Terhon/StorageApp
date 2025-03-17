@@ -15,5 +15,5 @@ public class Recipe
     [Required]
     public string? Description { get; set; }
 
-    public HashSet<IngredientItem> Ingredients { get; } = [];
+    public List<IngredientItem> Ingredients { get; } = [];
 }

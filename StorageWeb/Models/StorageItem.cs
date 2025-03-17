@@ -18,5 +18,5 @@ public class StorageItem
     public int Amount { get; set; }
     
     [NotMapped]
-    public string AmountWithUnit => $"{Amount} {Item.Unit}";
+    public string AmountWithUnit => $"{Amount} {Item?.Unit}";
 }
