@@ -44,16 +44,17 @@ namespace StorageWeb.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Description")] Recipe recipe)
+        public async Task<IActionResult> Create(Recipe recipe)
         {
-            if (ModelState.IsValid)
-            {
-                context.Add(recipe);
-                await context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
+            if (!ModelState.IsValid)
+                return View(recipe);
 
-            return View(recipe);
+            foreach (var ingredient in recipe.Ingredients)
+                context.Add(ingredient);
+
+            context.Add(recipe);
+            await context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Recipe/Edit/5
@@ -76,7 +77,7 @@ namespace StorageWeb.Controllers
 
             return View(recipe);
         }
-        
+
         // POST: Recipes/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -87,28 +88,28 @@ namespace StorageWeb.Controllers
 
             if (!ModelState.IsValid)
                 return View(updatedRecipe);
-            
+
             var existingRecipe = await context.Recipe
                 .Include(r => r.Ingredients)
                 .FirstOrDefaultAsync(r => r.Id == id);
 
             if (existingRecipe == null)
                 return NotFound();
-            
+
             existingRecipe.Name = updatedRecipe.Name;
             existingRecipe.Description = updatedRecipe.Description;
-            
+
             var updatedIngredientIds = updatedRecipe.Ingredients.Select(i => i.Id).ToList();
             var ingredientsToRemove = existingRecipe.Ingredients
                 .Where(i => !updatedIngredientIds.Contains(i.Id))
                 .ToList();
-            
+
             foreach (var ingredient in ingredientsToRemove)
             {
                 existingRecipe.Ingredients.Remove(ingredient);
                 context.IngredientItems.Remove(ingredient);
             }
-            
+
             // Add or update ingredients
             foreach (var ingredient in updatedRecipe.Ingredients)
             {

@@ -7,14 +7,14 @@
 <h1>Create</h1>
 
 <h4>Recipe</h4>
-<hr />
+<hr/>
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
+                <input asp-for="Name" class="form-control"/>
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -22,8 +22,27 @@
                 <textarea asp-for="Description" class="form-control"></textarea>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
+
+            <h4>Ingredients</h4>
+            <table id="ingredients-list" class="table">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Amount</th>
+                    <th>Unit</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody id="ingredient-list">
+                
+                </tbody>
+            </table>
+            <div>
+                <input type="text" id="search-item" placeholder="Search for an item..." autocomplete="off"/>
+            </div>
+
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
+                <input type="submit" value="Create" class="btn btn-primary"/>
             </div>
         </form>
     </div>
@@ -33,3 +52,57 @@
     <a asp-action="Index">Back to List</a>
 </div>
 
+
+@section Scripts {
+
+    <script>
+        $(document).ready(function () {
+            const ingredientsList = $("#ingredients-list tbody");
+
+            $("#search-item").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: "/Recipe/GetIngredients",
+                        data: {search: request.term},
+                        success: function (data) {
+                            response(data.map(item => ({
+                                label: `${item.name} (${item.unit})`,
+                                value: item.name,
+                                id: item.id,
+                                unit: item.unit
+                            })));
+                        }
+                    });
+                },
+                select: function (event, ui) {
+                    addIngredient(ui.item);
+                    $(this).val(""); // Clear the input field
+                    return false; // Prevent default behavior
+                }
+            });
+
+            function addIngredient(item) {
+                let currentIndex = $("#ingredients-list tbody tr").length;
+
+                const newRow = $(`
+                <tr>
+                    <td>
+                        <input type="hidden" name="Ingredients[${currentIndex}].Id" value="0" />
+                        <input type="hidden" name="Ingredients[${currentIndex}].ItemId" value="${item.id}" /> 
+                        <input name="Ingredients[${currentIndex}].Item.Name" class="form-control" disabled value="${item.value}"/>                        
+                    </td>
+                    <td><input type="number" name="Ingredients[${currentIndex}].Amount" class="form-control"/></td>
+                    <td><input name="Ingredients[${currentIndex}].Item.Unit" class="form-control" disabled value="${item.unit}"/></td>
+                    <td> <button type="button" class="btn btn-danger remove-ingredient">Remove</button></td>
+                </tr>
+            `);
+                ingredientsList.append(newRow);
+            }
+
+            $(document).on("click", ".remove-ingredient", function () {
+                $(this).closest("tr").remove();
+            });
+        });
+
+    </script>
+}
