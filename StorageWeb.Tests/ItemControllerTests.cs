@@ -59,6 +59,17 @@ public class ItemControllerTests
     }
 
     [Fact]
+    public void Create_ReturnsViewResult()
+    {
+        var context = GetInMemoryStorageWebContext();
+        var controller = new ItemController(context);
+        
+        var result = controller.Create();
+        
+        Assert.IsType<ViewResult>(result);
+    }
+    
+    [Fact]
     public async Task Create_AddsItemToItemController_WhenValid()
     {
         var context = GetInMemoryStorageWebContext();
@@ -106,6 +117,38 @@ public class ItemControllerTests
     }
 
     [Fact]
+    public async Task Edit_ReturnsNotFoundResult_WhenNullId()
+    {
+        var context = GetInMemoryStorageWebContext();
+        var controller = new ItemController(context);
+        
+        var result = await controller.Edit(null);
+        
+        Assert.IsType<NotFoundResult>(result);
+    }
+    
+    [Fact]
+    public async Task Edit_ModifiesItem_WhenItemExists()
+    {
+        var context = GetInMemoryStorageWebContext();
+        var controller = new ItemController(context);
+        
+        var newName = "New Name";
+        var newUnit = "New Unit";
+        
+        var editedItem = context.Item.First();
+        editedItem.Unit = newUnit;
+        editedItem.Name = newName;
+        var result = await controller.Edit(editedItem.Id, editedItem);
+        
+        Assert.IsType<RedirectToActionResult>(result);
+        var item = context.Item.SingleOrDefault(x => x.Id == 1);
+        item.Should().NotBeNull();
+        item.Name.Should().Be(newName);
+        item.Unit.Should().Be(newUnit);
+    }
+    
+    [Fact]
     public async Task Delete_ReturnsViewResult_WhenItemExists()
     {
         var context = GetInMemoryStorageWebContext();
@@ -118,15 +161,18 @@ public class ItemControllerTests
         model.Name.Should().Be("Item 1");
         model.Unit.Should().Be("unit 1");
     }
-
+    
     [Fact]
-    public void Create_ReturnsViewResult()
+    public async Task DeleteConfirmed_RemovesItem_WhenItemExists()
     {
         var context = GetInMemoryStorageWebContext();
         var controller = new ItemController(context);
+
+        var itemCount = context.Item.Count();
         
-        var result = controller.Create();
+        var result = await controller.DeleteConfirmed(1);
         
-        Assert.IsType<ViewResult>(result);
+        Assert.IsType<RedirectToActionResult>(result);
+        context.Item.Count().Should().Be(itemCount - 1);
     }
 }
