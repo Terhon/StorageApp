@@ -5,19 +5,12 @@ using StorageWeb.Models;
 
 namespace StorageWeb.Controllers
 {
-    public class ItemController : Controller
+    public class ItemController(StorageWebContext context) : Controller
     {
-        private readonly StorageWebContext _context;
-
-        public ItemController(StorageWebContext context)
-        {
-            _context = context;
-        }
-
         // GET: Item
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Item.ToListAsync());
+            return View(await context.Item.ToListAsync());
         }
         
         // GET: Item/Details/5
@@ -28,7 +21,7 @@ namespace StorageWeb.Controllers
                 return NotFound();
             }
 
-            var item = await _context.Item
+            var item = await context.Item
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (item == null)
             {
@@ -51,13 +44,12 @@ namespace StorageWeb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Item item)
         {
-            if (ModelState.IsValid)
-            {
-                _context.Add(item);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(item);
+            if (!ModelState.IsValid) 
+                return View(item);
+            
+            context.Add(item);
+            await context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Item/Edit/5
@@ -68,7 +60,7 @@ namespace StorageWeb.Controllers
                 return NotFound();
             }
 
-            var item = await _context.Item.FindAsync(id);
+            var item = await context.Item.FindAsync(id);
             if (item == null)
             {
                 return NotFound();
@@ -93,8 +85,8 @@ namespace StorageWeb.Controllers
             
             try
             {
-                _context.Update(item);
-                await _context.SaveChangesAsync();
+                context.Update(item);
+                await context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -118,7 +110,7 @@ namespace StorageWeb.Controllers
                 return NotFound();
             }
 
-            var item = await _context.Item
+            var item = await context.Item
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (item == null)
             {
@@ -133,19 +125,19 @@ namespace StorageWeb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var item = await _context.Item.FindAsync(id);
+            var item = await context.Item.FindAsync(id);
             if (item != null)
             {
-                _context.Item.Remove(item);
+                context.Item.Remove(item);
             }
 
-            await _context.SaveChangesAsync();
+            await context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool ItemExists(int id)
         {
-            return _context.Item.Any(e => e.Id == id);
+            return context.Item.Any(e => e.Id == id);
         }
     }
 }

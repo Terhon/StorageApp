@@ -1,23 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using StorageWeb.Models;
 
 namespace StorageWeb.Data
 {
-    public class StorageWebContext : DbContext
+    public class StorageWebContext(DbContextOptions<StorageWebContext> options) : DbContext(options)
     {
-        public StorageWebContext (DbContextOptions<StorageWebContext> options)
-            : base(options)
-        {
-        }
-
-        public DbSet<StorageWeb.Models.Item> Item { get; set; } = default!;
-        public DbSet<StorageWeb.Models.Recipe> Recipe { get; set; } = default!;
-        public DbSet<StorageWeb.Models.IngredientItem> IngredientItems  { get; set; } = default!;
-        public DbSet<StorageWeb.Models.StorageItem> StorageItems { get; set; } = default!;
+        public DbSet<Item> Item { get; set; } = default!;
+        public DbSet<Recipe> Recipe { get; set; } = default!;
+        public DbSet<IngredientItem> IngredientItems  { get; set; } = default!;
+        public DbSet<StorageItem> StorageItems { get; set; } = default!;
         
     }
 }

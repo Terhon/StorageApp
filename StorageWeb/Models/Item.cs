@@ -8,9 +8,9 @@ public class Item
 
     [StringLength(60)]
     [Required]
-    public string Name { get; set; }
+    public required string Name { get; set; }
 
     [StringLength(20)]
     [Required]
-    public string Unit { get; set; }
+    public required string Unit { get; set; }
 }
