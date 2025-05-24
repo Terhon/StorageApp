@@ -25,8 +25,8 @@ public class ItemControllerTests
 
     private void Seed(StorageWebContext context)
     {
-        context.Item.Add(new Item{ Id = 1, Name = "Item 1" , Unit = "unit 1"});
-        context.Item.Add(new Item{ Id = 2, Name = "Item 2" , Unit = "unit 2"});
+        context.Item.Add(new Item{ Name = "Item 1" , Unit = "unit 1"});
+        context.Item.Add(new Item{ Name = "Item 2" , Unit = "unit 2"});
         
         context.SaveChanges();
     }
