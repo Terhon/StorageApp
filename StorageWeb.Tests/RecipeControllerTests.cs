@@ -35,7 +35,7 @@ public class RecipeControllerTests
 
         context.IngredientItems.Add(new IngredientItem{ ItemId = 1, Amount = 2, RecipeId = recipe1.Id});
         context.IngredientItems.Add(new IngredientItem{ ItemId = 2, Amount = 5, RecipeId = recipe1.Id});
-        context.IngredientItems.Add(new IngredientItem{ ItemId = 1, Amount = 30, RecipeId = recipe1.Id});
+        context.IngredientItems.Add(new IngredientItem{ ItemId = 1, Amount = 30, RecipeId = recipe2.Id});
         
         context.SaveChanges();
     }
@@ -189,7 +189,7 @@ public class RecipeControllerTests
         var context = GetInMemoryStorageWebContext();
         var controller = new RecipeController(context);
 
-        var recipeCount = context.Item.Count();
+        var recipeCount = context.Recipe.Count();
         var recipe = context.Recipe.First();
         
         var result = await controller.DeleteConfirmed(recipe.Id);
