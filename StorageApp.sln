@@ -4,6 +4,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Storage.Web", "Storage.Web\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StorageWeb.Tests", "StorageWeb.Tests\StorageWeb.Tests.csproj", "{44E66D52-CA12-46BE-AD80-75070ED4DCFE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Storage.Domain", "Storage.Domain\Storage.Domain.csproj", "{3334554A-BA5F-4C3C-8ED5-E198F758472A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Storage.Application", "Storage.Application\Storage.Application.csproj", "{A9794A16-8BB6-4C69-AD57-1E249D1BFDA8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Storage.Infrastructure", "Storage.Infrastructure\Storage.Infrastructure.csproj", "{A3DCFEDB-2D99-4D36-9D2A-18C26C1ABD67}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +24,17 @@ Global
 		{44E66D52-CA12-46BE-AD80-75070ED4DCFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{44E66D52-CA12-46BE-AD80-75070ED4DCFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{44E66D52-CA12-46BE-AD80-75070ED4DCFE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3334554A-BA5F-4C3C-8ED5-E198F758472A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3334554A-BA5F-4C3C-8ED5-E198F758472A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3334554A-BA5F-4C3C-8ED5-E198F758472A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3334554A-BA5F-4C3C-8ED5-E198F758472A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9794A16-8BB6-4C69-AD57-1E249D1BFDA8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9794A16-8BB6-4C69-AD57-1E249D1BFDA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9794A16-8BB6-4C69-AD57-1E249D1BFDA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9794A16-8BB6-4C69-AD57-1E249D1BFDA8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3DCFEDB-2D99-4D36-9D2A-18C26C1ABD67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3DCFEDB-2D99-4D36-9D2A-18C26C1ABD67}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3DCFEDB-2D99-4D36-9D2A-18C26C1ABD67}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3DCFEDB-2D99-4D36-9D2A-18C26C1ABD67}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
