@@ -25,7 +25,7 @@ namespace StorageWeb.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("StorageWeb.Models.Item", b =>
+            modelBuilder.Entity("Storage.Web.Models.Item", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()

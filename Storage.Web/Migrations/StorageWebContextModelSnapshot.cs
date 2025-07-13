@@ -22,7 +22,7 @@ namespace StorageWeb.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("StorageWeb.Models.IngredientItem", b =>
+            modelBuilder.Entity("Storage.Web.Models.IngredientItem", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -48,7 +48,7 @@ namespace StorageWeb.Migrations
                     b.ToTable("IngredientItems");
                 });
 
-            modelBuilder.Entity("StorageWeb.Models.Item", b =>
+            modelBuilder.Entity("Storage.Web.Models.Item", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -71,7 +71,7 @@ namespace StorageWeb.Migrations
                     b.ToTable("Item");
                 });
 
-            modelBuilder.Entity("StorageWeb.Models.Recipe", b =>
+            modelBuilder.Entity("Storage.Web.Models.Recipe", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -94,7 +94,7 @@ namespace StorageWeb.Migrations
                     b.ToTable("Recipe");
                 });
 
-            modelBuilder.Entity("StorageWeb.Models.StorageItem", b =>
+            modelBuilder.Entity("Storage.Web.Models.StorageItem", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -118,15 +118,15 @@ namespace StorageWeb.Migrations
                     b.ToTable("StorageItems");
                 });
 
-            modelBuilder.Entity("StorageWeb.Models.IngredientItem", b =>
+            modelBuilder.Entity("Storage.Web.Models.IngredientItem", b =>
                 {
-                    b.HasOne("StorageWeb.Models.Item", "Item")
+                    b.HasOne("Storage.Web.Models.Item", "Item")
                         .WithMany()
                         .HasForeignKey("ItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("StorageWeb.Models.Recipe", "Recipe")
+                    b.HasOne("Storage.Web.Models.Recipe", "Recipe")
                         .WithMany("Ingredients")
                         .HasForeignKey("RecipeId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -137,9 +137,9 @@ namespace StorageWeb.Migrations
                     b.Navigation("Recipe");
                 });
 
-            modelBuilder.Entity("StorageWeb.Models.StorageItem", b =>
+            modelBuilder.Entity("Storage.Web.Models.StorageItem", b =>
                 {
-                    b.HasOne("StorageWeb.Models.Item", "Item")
+                    b.HasOne("Storage.Web.Models.Item", "Item")
                         .WithMany()
                         .HasForeignKey("ItemId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -148,7 +148,7 @@ namespace StorageWeb.Migrations
                     b.Navigation("Item");
                 });
 
-            modelBuilder.Entity("StorageWeb.Models.Recipe", b =>
+            modelBuilder.Entity("Storage.Web.Models.Recipe", b =>
                 {
                     b.Navigation("Ingredients");
                 });

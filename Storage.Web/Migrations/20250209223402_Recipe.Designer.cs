@@ -40,7 +40,7 @@ namespace StorageWeb.Migrations
                     b.ToTable("ItemRecipe");
                 });
 
-            modelBuilder.Entity("StorageWeb.Models.Item", b =>
+            modelBuilder.Entity("Storage.Web.Models.Item", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -64,7 +64,7 @@ namespace StorageWeb.Migrations
                     b.ToTable("Item");
                 });
 
-            modelBuilder.Entity("StorageWeb.Models.Recipe", b =>
+            modelBuilder.Entity("Storage.Web.Models.Recipe", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -89,13 +89,13 @@ namespace StorageWeb.Migrations
 
             modelBuilder.Entity("ItemRecipe", b =>
                 {
-                    b.HasOne("StorageWeb.Models.Item", null)
+                    b.HasOne("Storage.Web.Models.Item", null)
                         .WithMany()
                         .HasForeignKey("IngredientsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("StorageWeb.Models.Recipe", null)
+                    b.HasOne("Storage.Web.Models.Recipe", null)
                         .WithMany()
                         .HasForeignKey("RecipeId")
                         .OnDelete(DeleteBehavior.Cascade)

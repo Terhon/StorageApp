@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StorageWeb", "StorageWeb\StorageWeb.csproj", "{EC7F132C-24BE-416F-8D66-5F708D8597F6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Storage.Web", "Storage.Web\Storage.Web.csproj", "{EC7F132C-24BE-416F-8D66-5F708D8597F6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StorageWeb.Tests", "StorageWeb.Tests\StorageWeb.Tests.csproj", "{44E66D52-CA12-46BE-AD80-75070ED4DCFE}"
 EndProject
