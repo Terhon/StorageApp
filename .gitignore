@@ -1,5 +1,3 @@
-/StorageWeb.UnitTests/obj/
-/StorageWeb.UnitTests/bin/
-/StorageWeb/obj/
-/StorageWeb/bin/
+bin
+obj
 .idea/
