@@ -1,21 +1,22 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using StorageWeb.Data;
+using Storage.Application.Commands;
+using Storage.Application.Interfaces;
 using StorageWeb.Models;
 
 namespace StorageWeb.Controllers
 {
-    public class ItemController(StorageWebContext context) : Controller
+    public class ItemController(IItemTypeRepository context) : Controller
     {
         // GET: Item
         public async Task<IActionResult> Index()
         {
-            return View(await context.Item.ToListAsync());
+            //return View(await context.Item.ToListAsync());
+            return View();
         }
         
         // GET: Item/Details/5
         public async Task<IActionResult> Details(int? id)
-        {
+        {/*
             if (id == null)
             {
                 return NotFound();
@@ -28,7 +29,8 @@ namespace StorageWeb.Controllers
                 return NotFound();
             }
 
-            return View(item);
+            return View(item);*/
+            return View();
         }
 
         // GET: Item/Create
@@ -46,15 +48,14 @@ namespace StorageWeb.Controllers
         {
             if (!ModelState.IsValid) 
                 return View(item);
+            await context.AddItemType(new CreateItemTypeCommand() { Name = item.Name, Unit = item.Unit });
             
-            context.Add(item);
-            await context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         // GET: Item/Edit/5
         public async Task<IActionResult> Edit(int? id)
-        {
+        {/*
             if (id == null)
             {
                 return NotFound();
@@ -65,7 +66,8 @@ namespace StorageWeb.Controllers
             {
                 return NotFound();
             }
-            return View(item);
+            return View(item);*/
+            return View();
         }
 
         // POST: Item/Edit/5
@@ -74,7 +76,7 @@ namespace StorageWeb.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Name,AcquisitionDate,Amount")] Item item)
-        {
+        {/*
             if (id != item.Id)
             {
                 return NotFound();
@@ -99,12 +101,13 @@ namespace StorageWeb.Controllers
                     throw;
                 }
             }
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index));*/
+            return View();
         }
 
         // GET: Item/Delete/5
         public async Task<IActionResult> Delete(int? id)
-        {
+        {/*
             if (id == null)
             {
                 return NotFound();
@@ -117,14 +120,15 @@ namespace StorageWeb.Controllers
                 return NotFound();
             }
 
-            return View(item);
+            return View(item);*/
+            return View();
         }
 
         // POST: Item/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
-        {
+        {/*
             var item = await context.Item.FindAsync(id);
             if (item != null)
             {
@@ -132,12 +136,14 @@ namespace StorageWeb.Controllers
             }
 
             await context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Index));*/
+            return View();
         }
 
         private bool ItemExists(int id)
         {
-            return context.Item.Any(e => e.Id == id);
+            //return context.Item.Any(e => e.Id == id);
+            return false;
         }
     }
 }

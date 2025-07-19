@@ -9,6 +9,5 @@ namespace StorageWeb.Data
         public DbSet<Recipe> Recipe { get; set; } = default!;
         public DbSet<IngredientItem> IngredientItems  { get; set; } = default!;
         public DbSet<StorageItem> StorageItems { get; set; } = default!;
-        
     }
 }

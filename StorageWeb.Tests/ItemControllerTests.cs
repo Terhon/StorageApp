@@ -2,31 +2,34 @@ using System.ComponentModel.DataAnnotations;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Storage.Application.Interfaces;
+using Storage.Domain.Entities;
+using Storage.Infrastructure.Data;
+using Storage.Infrastructure.Services;
 using StorageWeb.Controllers;
-using StorageWeb.Data;
 using StorageWeb.Models;
 
 namespace StorageApp.UnitTests;
 
 public class ItemControllerTests
 {
-    private StorageWebContext GetInMemoryStorageWebContext()
+    private (IItemTypeRepository, StorageDbContext) GetRepositoryAndInMemoryDbContext()
     {
-        var options = new DbContextOptionsBuilder<StorageWebContext>()
+        var options = new DbContextOptionsBuilder<StorageDbContext>()
             .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
             .Options;
         
-        var context = new StorageWebContext(options);
+        var context = new StorageDbContext(options);
         
         Seed(context);
         
-        return context;
+        return (new ItemTypeRepository(context), context);
     }
 
-    private void Seed(StorageWebContext context)
+    private static void Seed(StorageDbContext context)
     {
-        context.Item.Add(new Item{ Name = "Item 1" , Unit = "unit 1"});
-        context.Item.Add(new Item{ Name = "Item 2" , Unit = "unit 2"});
+        context.ItemTypes.Add(new ItemType{ Name = "Item 1" , Unit = "unit 1"});
+        context.ItemTypes.Add(new ItemType{ Name = "Item 2" , Unit = "unit 2"});
         
         context.SaveChanges();
     }
@@ -34,8 +37,8 @@ public class ItemControllerTests
     [Fact]
     public async Task Index_ReturnsViewResult_WhenItemExists()
     {
-        var context = GetInMemoryStorageWebContext();
-        var controller = new ItemController(context);
+        var (repository, context) = GetRepositoryAndInMemoryDbContext();
+        var controller = new ItemController(repository);
         
         var result = await controller.Index();
         
@@ -47,8 +50,8 @@ public class ItemControllerTests
     [Fact]
     public async Task Details_ReturnsViewResult_WhenItemExists()
     {
-        var context = GetInMemoryStorageWebContext();
-        var controller = new ItemController(context);
+        var (repository, context) = GetRepositoryAndInMemoryDbContext();
+        var controller = new ItemController(repository);
         
         var result = await controller.Details(1);
         
@@ -61,8 +64,8 @@ public class ItemControllerTests
     [Fact]
     public void Create_ReturnsViewResult()
     {
-        var context = GetInMemoryStorageWebContext();
-        var controller = new ItemController(context);
+        var (repository, context) = GetRepositoryAndInMemoryDbContext();
+        var controller = new ItemController(repository);
         
         var result = controller.Create();
         
@@ -72,22 +75,22 @@ public class ItemControllerTests
     [Fact]
     public async Task Create_AddsItemToItemController_WhenValid()
     {
-        var context = GetInMemoryStorageWebContext();
-        var controller = new ItemController(context);
+        var (repository, context) = GetRepositoryAndInMemoryDbContext();
+        var controller = new ItemController(repository);
         
-        var newItem = new Item { Name = "New Item", Unit = "unit 1" };
+        var newItem = new Item { Name = "New Item", Unit = "New Unit" };
         var result = await controller.Create(newItem);
         
         Assert.IsType<RedirectToActionResult>(result);
-        context.Item.Count().Should().Be(3);
-        context.Item.Should().Contain(newItem);
+        context.ItemTypes.Count().Should().Be(3);
+        context.ItemTypes.Should().ContainSingle(i => i.Name == newItem.Name && i.Unit == newItem.Unit );
     }
     
     [Fact]
     public async Task Create_AddsItemToItemController_WhenInvalid()
     {
-        var context = GetInMemoryStorageWebContext();
-        var controller = new ItemController(context);
+        var (repository, context) = GetRepositoryAndInMemoryDbContext();
+        var controller = new ItemController(repository);
         
         var newItem = new Item{ Name = new string('x', 61), Unit = new string('u', 21) };
         
@@ -105,8 +108,8 @@ public class ItemControllerTests
     [Fact]
     public async Task Edit_ReturnsViewResult_WhenItemExists()
     {
-        var context = GetInMemoryStorageWebContext();
-        var controller = new ItemController(context);
+        var (repository, context) = GetRepositoryAndInMemoryDbContext();
+        var controller = new ItemController(repository);
         
         var result = await controller.Edit(1);
         
@@ -119,8 +122,8 @@ public class ItemControllerTests
     [Fact]
     public async Task Edit_ReturnsNotFoundResult_WhenNullId()
     {
-        var context = GetInMemoryStorageWebContext();
-        var controller = new ItemController(context);
+        var (repository, context) = GetRepositoryAndInMemoryDbContext();
+        var controller = new ItemController(repository);
         
         var result = await controller.Edit(null);
         
@@ -130,19 +133,17 @@ public class ItemControllerTests
     [Fact]
     public async Task Edit_ModifiesItem_WhenItemExists()
     {
-        var context = GetInMemoryStorageWebContext();
-        var controller = new ItemController(context);
+        var (repository, context) = GetRepositoryAndInMemoryDbContext();
+        var controller = new ItemController(repository);
         
         var newName = "New Name";
         var newUnit = "New Unit";
         
-        var editedItem = context.Item.First();
-        editedItem.Unit = newUnit;
-        editedItem.Name = newName;
-        var result = await controller.Edit(editedItem.Id, editedItem);
+        var editedItem = context.ItemTypes.First();
+        var result = await controller.Edit(editedItem.Id, new Item { Id = editedItem.Id, Name = newName, Unit = newUnit });
         
         Assert.IsType<RedirectToActionResult>(result);
-        var item = context.Item.SingleOrDefault(x => x.Id == 1);
+        var item = context.ItemTypes.SingleOrDefault(x => x.Id == 1);
         item.Should().NotBeNull();
         item.Name.Should().Be(newName);
         item.Unit.Should().Be(newUnit);
@@ -151,8 +152,8 @@ public class ItemControllerTests
     [Fact]
     public async Task Delete_ReturnsViewResult_WhenItemExists()
     {
-        var context = GetInMemoryStorageWebContext();
-        var controller = new ItemController(context);
+        var (repository, context) = GetRepositoryAndInMemoryDbContext();
+        var controller = new ItemController(repository);
         
         var result = await controller.Delete(1);
         var viewResult = Assert.IsType<ViewResult>(result);
@@ -165,14 +166,14 @@ public class ItemControllerTests
     [Fact]
     public async Task DeleteConfirmed_RemovesItem_WhenItemExists()
     {
-        var context = GetInMemoryStorageWebContext();
-        var controller = new ItemController(context);
+        var (repository, context) = GetRepositoryAndInMemoryDbContext();
+        var controller = new ItemController(repository);
 
-        var itemCount = context.Item.Count();
+        var itemCount = context.ItemTypes.Count();
         
         var result = await controller.DeleteConfirmed(1);
         
         Assert.IsType<RedirectToActionResult>(result);
-        context.Item.Count().Should().Be(itemCount - 1);
+        context.ItemTypes.Count().Should().Be(itemCount - 1);
     }
 }

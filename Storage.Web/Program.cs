@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Storage.Infrastructure;
 using StorageWeb.Data;
 using StorageWeb.Models;
 
@@ -8,6 +9,8 @@ builder.Services.AddDbContext<StorageWebContext>(options =>
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.AddInfrastructure();
 
 var app = builder.Build();
 
