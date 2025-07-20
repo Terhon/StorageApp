@@ -1,12 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Storage.Application.Commands;
-using Storage.Application.Interfaces;
 using Storage.Domain.Entities;
 using Storage.Infrastructure.Data;
 
 namespace Storage.Infrastructure.Services;
 
-public class ItemTypeRepository(StorageDbContext context) : IItemTypeRepository
+public class ItemTypeCommandService(StorageDbContext context) : IItemTypeCommandService
 {
     public async Task AddItemType(CreateItemTypeCommand cmd)
     {

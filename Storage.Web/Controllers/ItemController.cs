@@ -1,11 +1,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Storage.Application.Commands;
-using Storage.Application.Interfaces;
 using StorageWeb.Models;
 
 namespace StorageWeb.Controllers
 {
-    public class ItemController(IItemTypeRepository context) : Controller
+    public class ItemController(IItemTypeCommandService context) : Controller
     {
         // GET: Item
         public async Task<IActionResult> Index()

@@ -3,7 +3,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
-using Storage.Application.Interfaces;
+using Storage.Application.Commands;
 using Storage.Domain.Entities;
 using Storage.Infrastructure.Data;
 using Storage.Infrastructure.Services;
@@ -14,7 +14,7 @@ namespace StorageApp.UnitTests;
 
 public class ItemControllerTests
 {
-    private (IItemTypeRepository, StorageDbContext) GetRepositoryAndInMemoryDbContext()
+    private (IItemTypeCommandService, StorageDbContext) GetRepositoryAndInMemoryDbContext()
     {
         var connection = new SqliteConnection("Filename=:memory:");
         connection.Open();
@@ -27,7 +27,7 @@ public class ItemControllerTests
         context.Database.EnsureCreated();
         Seed(context);
         
-        return (new ItemTypeRepository(context), context);
+        return (new ItemTypeCommandService(context), context);
     }
 
     private static void Seed(StorageDbContext context)
