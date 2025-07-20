@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Storage.Application.Interfaces;
 using Storage.Domain.Entities;
@@ -15,12 +16,15 @@ public class ItemControllerTests
 {
     private (IItemTypeRepository, StorageDbContext) GetRepositoryAndInMemoryDbContext()
     {
+        var connection = new SqliteConnection("Filename=:memory:");
+        connection.Open();
+        
         var options = new DbContextOptionsBuilder<StorageDbContext>()
-            .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+            .UseSqlite(connection)
             .Options;
         
         var context = new StorageDbContext(options);
-        
+        context.Database.EnsureCreated();
         Seed(context);
         
         return (new ItemTypeRepository(context), context);

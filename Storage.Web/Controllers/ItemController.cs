@@ -13,23 +13,24 @@ namespace StorageWeb.Controllers
             //return View(await context.Item.ToListAsync());
             return View();
         }
-        
+
         // GET: Item/Details/5
         public async Task<IActionResult> Details(int? id)
-        {/*
-            if (id == null)
-            {
-                return NotFound();
-            }
+        {
+            /*
+                if (id == null)
+                {
+                    return NotFound();
+                }
 
-            var item = await context.Item
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (item == null)
-            {
-                return NotFound();
-            }
+                var item = await context.Item
+                    .FirstOrDefaultAsync(m => m.Id == id);
+                if (item == null)
+                {
+                    return NotFound();
+                }
 
-            return View(item);*/
+                return View(item);*/
             return View();
         }
 
@@ -46,27 +47,28 @@ namespace StorageWeb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Item item)
         {
-            if (!ModelState.IsValid) 
+            if (!ModelState.IsValid)
                 return View(item);
-            await context.AddItemType(new CreateItemTypeCommand() { Name = item.Name, Unit = item.Unit });
-            
+            await context.AddItemType(new CreateItemTypeCommand { Name = item.Name, Unit = item.Unit });
+
             return RedirectToAction(nameof(Index));
         }
 
         // GET: Item/Edit/5
         public async Task<IActionResult> Edit(int? id)
-        {/*
-            if (id == null)
-            {
-                return NotFound();
-            }
+        {
+            /*
+                if (id == null)
+                {
+                    return NotFound();
+                }
 
-            var item = await context.Item.FindAsync(id);
-            if (item == null)
-            {
-                return NotFound();
-            }
-            return View(item);*/
+                var item = await context.Item.FindAsync(id);
+                if (item == null)
+                {
+                    return NotFound();
+                }
+                return View(item);*/
             return View();
         }
 
@@ -75,52 +77,38 @@ namespace StorageWeb.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,AcquisitionDate,Amount")] Item item)
-        {/*
+        public async Task<IActionResult> Edit(int id,  Item item)
+        {
             if (id != item.Id)
             {
                 return NotFound();
             }
 
-            if (!ModelState.IsValid) 
+            if (!ModelState.IsValid)
                 return View(item);
             
-            try
-            {
-                context.Update(item);
-                await context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!ItemExists(item.Id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-            return RedirectToAction(nameof(Index));*/
-            return View();
+            await context.UpdateItemType(new UpdateItemTypeCommand { Id = item.Id, Name = item.Name, Unit = item.Unit });
+            
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Item/Delete/5
         public async Task<IActionResult> Delete(int? id)
-        {/*
-            if (id == null)
-            {
-                return NotFound();
-            }
+        {
+            /*
+                if (id == null)
+                {
+                    return NotFound();
+                }
 
-            var item = await context.Item
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (item == null)
-            {
-                return NotFound();
-            }
+                var item = await context.Item
+                    .FirstOrDefaultAsync(m => m.Id == id);
+                if (item == null)
+                {
+                    return NotFound();
+                }
 
-            return View(item);*/
+                return View(item);*/
             return View();
         }
 
@@ -128,16 +116,10 @@ namespace StorageWeb.Controllers
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
-        {/*
-            var item = await context.Item.FindAsync(id);
-            if (item != null)
-            {
-                context.Item.Remove(item);
-            }
+        {
+            await context.DeleteItemType(new DeleteItemTypeCommand(id));
 
-            await context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));*/
-            return View();
+            return RedirectToAction(nameof(Index));
         }
 
         private bool ItemExists(int id)
