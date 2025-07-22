@@ -1,4 +1,6 @@
-﻿namespace Storage.Application.Commands;
+﻿using Storage.Application.Commands.DTOs;
+
+namespace Storage.Application.Commands;
 
 public interface IItemTypeCommandService
 {

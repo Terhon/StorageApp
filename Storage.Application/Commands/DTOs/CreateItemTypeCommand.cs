@@ -1,4 +1,4 @@
-﻿namespace Storage.Application.Commands;
+﻿namespace Storage.Application.Commands.DTOs;
 
 public class CreateItemTypeCommand
 {

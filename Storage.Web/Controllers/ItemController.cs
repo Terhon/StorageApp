@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using Storage.Application.Commands;
+using Storage.Application.Commands.DTOs;
 using StorageWeb.Models;
 
 namespace StorageWeb.Controllers
