@@ -1,6 +1,6 @@
-﻿namespace Storage.Application.Commands.DTOs;
+﻿namespace Storage.Application.ItemType.Queries.DTOs;
 
-public class UpdateItemTypeCommand
+public class ItemTypeDTO
 {
     public int Id { get; set; }
     public string Name { get; set; } = string.Empty;

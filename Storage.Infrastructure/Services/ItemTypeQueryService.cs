@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Storage.Application.Queries;
-using Storage.Application.Queries.DTOs;
+using Storage.Application.ItemType.Queries;
+using Storage.Application.ItemType.Queries.DTOs;
 using Storage.Infrastructure.Data;
 
 namespace Storage.Infrastructure.Services;

@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Storage.Application.Commands;
-using Storage.Application.Commands.DTOs;
+using Storage.Application.ItemType.Commands;
+using Storage.Application.ItemType.Commands.DTOs;
 using Storage.Domain.Entities;
 using Storage.Infrastructure.Data;
 

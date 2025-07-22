@@ -1,6 +1,6 @@
-﻿using Storage.Application.Queries.DTOs;
+﻿using Storage.Application.ItemType.Queries.DTOs;
 
-namespace Storage.Application.Queries;
+namespace Storage.Application.ItemType.Queries;
 
 public interface IItemTypeQueryService
 {

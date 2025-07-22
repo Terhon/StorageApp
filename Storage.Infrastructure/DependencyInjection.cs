@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Storage.Application.Commands;
-using Storage.Application.Queries;
+using Storage.Application.ItemType.Commands;
+using Storage.Application.ItemType.Queries;
 using Storage.Infrastructure.Services;
 
 namespace Storage.Infrastructure;

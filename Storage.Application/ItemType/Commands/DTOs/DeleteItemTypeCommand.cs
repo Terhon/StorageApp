@@ -1,4 +1,4 @@
-﻿namespace Storage.Application.Commands.DTOs;
+﻿namespace Storage.Application.ItemType.Commands.DTOs;
 
 public class DeleteItemTypeCommand(int id)
 {
