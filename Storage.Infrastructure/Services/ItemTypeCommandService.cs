@@ -18,12 +18,12 @@ public class ItemTypeCommandService(StorageDbContext context) : IItemTypeCommand
     public async Task UpdateItemType(UpdateItemTypeCommand cmd)
     {
         var itemType = context.ItemTypes.First(x => x.Id == cmd.Id);
-        if(itemType is null)
+        if (itemType is null)
             throw new NullReferenceException($"ItemType with id {cmd.Id} not found");
-        
+
         itemType.Name = cmd.Name;
         itemType.Unit = cmd.Unit;
-        
+
         await context.SaveChangesAsync();
     }
 

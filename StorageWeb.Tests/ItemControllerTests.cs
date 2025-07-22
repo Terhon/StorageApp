@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Storage.Application.Commands;
+using Storage.Application.Queries;
 using Storage.Domain.Entities;
 using Storage.Infrastructure.Data;
 using Storage.Infrastructure.Services;
@@ -14,7 +15,7 @@ namespace StorageApp.UnitTests;
 
 public class ItemControllerTests
 {
-    private (IItemTypeCommandService, StorageDbContext) GetRepositoryAndInMemoryDbContext()
+    private (IItemTypeCommandService, IItemTypeQueryService, StorageDbContext) GetRepositoryAndInMemoryDbContext()
     {
         var connection = new SqliteConnection("Filename=:memory:");
         connection.Open();
@@ -27,7 +28,7 @@ public class ItemControllerTests
         context.Database.EnsureCreated();
         Seed(context);
         
-        return (new ItemTypeCommandService(context), context);
+        return (new ItemTypeCommandService(context), new ItemTypeQueryService(context), context);
     }
 
     private static void Seed(StorageDbContext context)
@@ -41,8 +42,8 @@ public class ItemControllerTests
     [Fact]
     public async Task Index_ReturnsViewResult_WhenItemExists()
     {
-        var (repository, context) = GetRepositoryAndInMemoryDbContext();
-        var controller = new ItemController(repository);
+        var (commandService, queryService, context) = GetRepositoryAndInMemoryDbContext();
+        var controller = new ItemController(commandService, queryService);
         
         var result = await controller.Index();
         
@@ -54,8 +55,8 @@ public class ItemControllerTests
     [Fact]
     public async Task Details_ReturnsViewResult_WhenItemExists()
     {
-        var (repository, context) = GetRepositoryAndInMemoryDbContext();
-        var controller = new ItemController(repository);
+        var (commandService, queryService, context) = GetRepositoryAndInMemoryDbContext();
+        var controller = new ItemController(commandService, queryService);
         
         var result = await controller.Details(1);
         
@@ -68,8 +69,8 @@ public class ItemControllerTests
     [Fact]
     public void Create_ReturnsViewResult()
     {
-        var (repository, context) = GetRepositoryAndInMemoryDbContext();
-        var controller = new ItemController(repository);
+        var (commandService, queryService, context) = GetRepositoryAndInMemoryDbContext();
+        var controller = new ItemController(commandService, queryService);
         
         var result = controller.Create();
         
@@ -79,8 +80,8 @@ public class ItemControllerTests
     [Fact]
     public async Task Create_AddsItemToItemController_WhenValid()
     {
-        var (repository, context) = GetRepositoryAndInMemoryDbContext();
-        var controller = new ItemController(repository);
+        var (commandService, queryService, context) = GetRepositoryAndInMemoryDbContext();
+        var controller = new ItemController(commandService, queryService);
         
         var newItem = new Item { Name = "New Item", Unit = "New Unit" };
         var result = await controller.Create(newItem);
@@ -93,8 +94,8 @@ public class ItemControllerTests
     [Fact]
     public async Task Create_AddsItemToItemController_WhenInvalid()
     {
-        var (repository, context) = GetRepositoryAndInMemoryDbContext();
-        var controller = new ItemController(repository);
+        var (commandService, queryService, context) = GetRepositoryAndInMemoryDbContext();
+        var controller = new ItemController(commandService, queryService);
         
         var newItem = new Item{ Name = new string('x', 61), Unit = new string('u', 21) };
         
@@ -112,8 +113,8 @@ public class ItemControllerTests
     [Fact]
     public async Task Edit_ReturnsViewResult_WhenItemExists()
     {
-        var (repository, context) = GetRepositoryAndInMemoryDbContext();
-        var controller = new ItemController(repository);
+        var (commandService, queryService, context) = GetRepositoryAndInMemoryDbContext();
+        var controller = new ItemController(commandService, queryService);
         
         var result = await controller.Edit(1);
         
@@ -126,8 +127,8 @@ public class ItemControllerTests
     [Fact]
     public async Task Edit_ReturnsNotFoundResult_WhenNullId()
     {
-        var (repository, context) = GetRepositoryAndInMemoryDbContext();
-        var controller = new ItemController(repository);
+        var (commandService, queryService, context) = GetRepositoryAndInMemoryDbContext();
+        var controller = new ItemController(commandService, queryService);
         
         var result = await controller.Edit(null);
         
@@ -137,8 +138,8 @@ public class ItemControllerTests
     [Fact]
     public async Task Edit_ModifiesItem_WhenItemExists()
     {
-        var (repository, context) = GetRepositoryAndInMemoryDbContext();
-        var controller = new ItemController(repository);
+        var (commandService, queryService, context) = GetRepositoryAndInMemoryDbContext();
+        var controller = new ItemController(commandService, queryService);
         
         var newName = "New Name";
         var newUnit = "New Unit";
@@ -156,8 +157,8 @@ public class ItemControllerTests
     [Fact]
     public async Task Delete_ReturnsViewResult_WhenItemExists()
     {
-        var (repository, context) = GetRepositoryAndInMemoryDbContext();
-        var controller = new ItemController(repository);
+        var (commandService, queryService, context) = GetRepositoryAndInMemoryDbContext();
+        var controller = new ItemController(commandService, queryService);
         
         var result = await controller.Delete(1);
         var viewResult = Assert.IsType<ViewResult>(result);
@@ -170,8 +171,8 @@ public class ItemControllerTests
     [Fact]
     public async Task DeleteConfirmed_RemovesItem_WhenItemExists()
     {
-        var (repository, context) = GetRepositoryAndInMemoryDbContext();
-        var controller = new ItemController(repository);
+        var (commandService, queryService, context) = GetRepositoryAndInMemoryDbContext();
+        var controller = new ItemController(commandService, queryService);
 
         var itemCount = context.ItemTypes.Count();
         
