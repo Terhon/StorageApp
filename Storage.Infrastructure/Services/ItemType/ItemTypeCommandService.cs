@@ -1,16 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Storage.Application.ItemType.Commands;
 using Storage.Application.ItemType.Commands.DTOs;
-using Storage.Domain.Entities;
 using Storage.Infrastructure.Data;
 
-namespace Storage.Infrastructure.Services;
+namespace Storage.Infrastructure.Services.ItemType;
 
 public class ItemTypeCommandService(StorageDbContext context) : IItemTypeCommandService
 {
     public async Task AddItemType(CreateItemTypeCommand cmd)
     {
-        var entity = new ItemType { Name = cmd.Name, Unit = cmd.Unit };
+        var entity = new Domain.Entities.ItemType { Name = cmd.Name, Unit = cmd.Unit };
         context.ItemTypes.Add(entity);
         await context.SaveChangesAsync();
     }

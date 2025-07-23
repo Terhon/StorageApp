@@ -7,7 +7,7 @@ using Storage.Application.ItemType.Commands;
 using Storage.Application.ItemType.Queries;
 using Storage.Domain.Entities;
 using Storage.Infrastructure.Data;
-using Storage.Infrastructure.Services;
+using Storage.Infrastructure.Services.ItemType;
 using StorageWeb.Controllers;
 using StorageWeb.Models;
 

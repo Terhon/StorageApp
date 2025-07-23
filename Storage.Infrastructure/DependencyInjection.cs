@@ -3,6 +3,7 @@ using Microsoft.Extensions.Hosting;
 using Storage.Application.ItemType.Commands;
 using Storage.Application.ItemType.Queries;
 using Storage.Infrastructure.Services;
+using Storage.Infrastructure.Services.ItemType;
 
 namespace Storage.Infrastructure;
 

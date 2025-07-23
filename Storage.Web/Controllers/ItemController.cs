@@ -12,7 +12,7 @@ namespace StorageWeb.Controllers
         public async Task<IActionResult> Index()
         {
             var itemTypes = await queryService.GetAllItemTypes();
-            var items = itemTypes.Select(i => new Item { Id = i.Id, Name = i.Name, Unit = i.Unit });
+            var items = itemTypes.Select(i => i.Map());
             return View(items);
         }
 
@@ -30,13 +30,7 @@ namespace StorageWeb.Controllers
                 return NotFound();
             }
 
-            var item = new Item
-            {
-                Id = itemType.Id,
-                Name = itemType.Name,
-                Unit = itemType.Unit
-            };
-            return View(item);
+            return View(itemType.Map());
         }
 
         // GET: Item/Create
@@ -73,13 +67,7 @@ namespace StorageWeb.Controllers
                 return NotFound();
             }
 
-            var item = new Item
-            {
-                Id = itemType.Id,
-                Name = itemType.Name,
-                Unit = itemType.Unit
-            };
-            return View(item);
+            return View(itemType.Map());
         }
 
         // POST: Item/Edit/5
@@ -116,13 +104,8 @@ namespace StorageWeb.Controllers
                 {
                     return NotFound();
                 }
-                var item = new Item
-                {
-                    Id = itemType.Id,
-                    Name = itemType.Name,
-                    Unit = itemType.Unit
-                };
-                return View(item);
+                
+                return View(itemType.Map());
         }
 
         // POST: Item/Delete/5
@@ -133,12 +116,6 @@ namespace StorageWeb.Controllers
             await commandService.DeleteItemType(new DeleteItemTypeCommand(id));
 
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool ItemExists(int id)
-        {
-            //return context.Item.Any(e => e.Id == id);
-            return false;
         }
     }
 }

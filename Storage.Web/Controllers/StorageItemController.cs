@@ -1,18 +1,28 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Storage.Application.ItemType.Queries;
+using Storage.Application.ItemType.Queries.DTOs;
+using Storage.Application.StorageItem.Commands;
+using Storage.Application.StorageItem.Commands.DTOs;
+using Storage.Application.StorageItem.Queries;
+using Storage.Application.StorageItem.Queries.DTOs;
 using StorageWeb.Data;
 using StorageWeb.Models;
 
 namespace StorageWeb.Controllers
 {
-    public class StorageItemController(StorageWebContext context) : Controller
+    public class StorageItemController(
+        IStorageItemCommandService commandService,
+        IStorageItemQueryService queryService,
+        IItemTypeQueryService itemTypeQueryService) : Controller
     {
         // GET: StorageItem
         public async Task<IActionResult> Index()
         {
-            var storageWebContext = context.StorageItems.Include(s => s.Item);
-            return View(await storageWebContext.ToListAsync());
+            //var storageWebContext = context.StorageItems.Include(s => s.Item);
+            var storageItems = await queryService.GetAllStorageItems();
+            return View(storageItems.Select(s => s.Map()).ToList());
         }
 
         // GET: StorageItem/Details/5
@@ -23,21 +33,20 @@ namespace StorageWeb.Controllers
                 return NotFound();
             }
 
-            var storageItem = await context.StorageItems
-                .Include(s => s.Item)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var storageItem = await queryService.GetStorageItemById(id.Value);
             if (storageItem == null)
             {
                 return NotFound();
             }
 
-            return View(storageItem);
+            return View(storageItem.Map());
         }
 
         // GET: StorageItem/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["ItemId"] = new SelectList(context.Item, "Id", "Name");
+            var itemTypes = await itemTypeQueryService.GetAllItemTypes();
+            ViewData["ItemId"] = new SelectList(itemTypes, "Id", "Name");
             return View();
         }
 
@@ -50,11 +59,17 @@ namespace StorageWeb.Controllers
         {
             if (ModelState.IsValid)
             {
-                context.Add(storageItem);
-                await context.SaveChangesAsync();
+                await commandService.AddStorageItem(new CreateStorageItemCommand
+                {
+                    ItemTypeId = storageItem.ItemId,
+                    AcquisitionDate = storageItem.AcquisitionDate,
+                    Amount = storageItem.Amount
+                });
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ItemId"] = new SelectList(context.Item, "Id", "Name", storageItem.ItemId);
+
+            var itemTypes = await itemTypeQueryService.GetAllItemTypes();
+            ViewData["ItemId"] = new SelectList(itemTypes, "Id", "Name", storageItem.ItemId);
             return View(storageItem);
         }
 
@@ -66,13 +81,16 @@ namespace StorageWeb.Controllers
                 return NotFound();
             }
 
-            var storageItem = await context.StorageItems.FindAsync(id);
+            var storageItem = await queryService.GetStorageItemById(id.Value);
             if (storageItem == null)
             {
                 return NotFound();
             }
-            ViewData["ItemId"] = new SelectList(context.Item, "Id", "Name", storageItem.ItemId);
-            return View(storageItem);
+            var item = storageItem.Map();
+            
+            var itemTypes = await itemTypeQueryService.GetAllItemTypes();
+            ViewData["ItemId"] = new SelectList(itemTypes, "Id", "Name", item.ItemId);
+            return View(item);
         }
 
         // POST: StorageItem/Edit/5
@@ -91,12 +109,17 @@ namespace StorageWeb.Controllers
             {
                 try
                 {
-                    context.Update(storageItem);
-                    await context.SaveChangesAsync();
+                    await commandService.UpdateStorageItem(new UpdateStorageItemCommand
+                    {
+                        Id = storageItem.Id,
+                        AcquisitionDate = storageItem.AcquisitionDate,
+                        Amount = storageItem.Amount,
+                        ItemTypeId = storageItem.ItemId
+                    });
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!StorageItemExists(storageItem.Id))
+                    if (!await StorageItemExists(storageItem.Id))
                     {
                         return NotFound();
                     }
@@ -105,9 +128,13 @@ namespace StorageWeb.Controllers
                         throw;
                     }
                 }
+
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ItemId"] = new SelectList(context.Item, "Id", "Name", storageItem.ItemId);
+            
+            var itemTypes = await itemTypeQueryService.GetAllItemTypes();
+            
+            ViewData["ItemId"] = new SelectList(itemTypes, "Id", "Name", storageItem.ItemId);
             return View(storageItem);
         }
 
@@ -119,15 +146,16 @@ namespace StorageWeb.Controllers
                 return NotFound();
             }
 
-            var storageItem = await context.StorageItems
+            var storageItem = await queryService.GetStorageItemById(id.Value); 
+            /*context.StorageItems
                 .Include(s => s.Item)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(m => m.Id == id);*/
             if (storageItem == null)
             {
                 return NotFound();
             }
 
-            return View(storageItem);
+            return View(storageItem.Map());
         }
 
         // POST: StorageItem/Delete/5
@@ -135,19 +163,19 @@ namespace StorageWeb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var storageItem = await context.StorageItems.FindAsync(id);
+            var storageItem = await queryService.GetStorageItemById(id);
             if (storageItem != null)
             {
-                context.StorageItems.Remove(storageItem);
+                await commandService.DeleteStorageItem(new DeleteStorageItemCommand(id));
             }
 
-            await context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool StorageItemExists(int id)
+        private async Task<bool> StorageItemExists(int id)
         {
-            return context.StorageItems.Any(e => e.Id == id);
+            var storageItems = await queryService.GetAllStorageItems();
+            return storageItems.Any(e => e.Id == id);
         }
     }
 }

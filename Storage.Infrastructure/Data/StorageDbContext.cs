@@ -7,10 +7,19 @@ public class StorageDbContext(DbContextOptions<StorageDbContext> options) : DbCo
 {
     public DbSet<ItemType> ItemTypes => Set<ItemType>();
 
+    public DbSet<StorageItem> StorageItems => Set<StorageItem>();
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
         
         modelBuilder.Entity<ItemType>().HasKey(x => x.Id);
+        
+        modelBuilder.Entity<StorageItem>().HasKey(x => x.Id);
+        modelBuilder.Entity<StorageItem>()
+            .HasOne(x => x.ItemType)
+            .WithMany()
+            .HasForeignKey("ItemTypeId")
+            .IsRequired();
     }
 }

@@ -3,7 +3,7 @@ using Storage.Application.ItemType.Queries;
 using Storage.Application.ItemType.Queries.DTOs;
 using Storage.Infrastructure.Data;
 
-namespace Storage.Infrastructure.Services;
+namespace Storage.Infrastructure.Services.ItemType;
 
 public class ItemTypeQueryService(StorageDbContext context) : IItemTypeQueryService
 {
