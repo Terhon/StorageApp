@@ -1,3 +1,3 @@
 ﻿namespace Storage.Application.IngredientItem.Commands.DTOs;
 
-public record UpdateIngredientItemCommand(int RecipeId, int ItemTypeId, double Amount);
+public record UpdateIngredientItemCommand(int Id, int RecipeId, int ItemTypeId, double Amount);
