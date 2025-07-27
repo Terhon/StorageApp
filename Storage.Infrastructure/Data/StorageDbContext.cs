@@ -6,8 +6,9 @@ namespace Storage.Infrastructure.Data;
 public class StorageDbContext(DbContextOptions<StorageDbContext> options) : DbContext(options)
 {
     public DbSet<ItemType> ItemTypes => Set<ItemType>();
-
     public DbSet<StorageItem> StorageItems => Set<StorageItem>();
+    public DbSet<IngredientItem> IngredientItems => Set<IngredientItem>();
+    public DbSet<Recipe> Recipes => Set<Recipe>();
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -21,5 +22,19 @@ public class StorageDbContext(DbContextOptions<StorageDbContext> options) : DbCo
             .WithMany()
             .HasForeignKey("ItemTypeId")
             .IsRequired();
+        
+        modelBuilder.Entity<IngredientItem>().HasKey(x => x.Id);
+        modelBuilder.Entity<IngredientItem>()
+            .HasOne(x => x.ItemType)
+            .WithMany()
+            .HasForeignKey("ItemTypeId")
+            .IsRequired();
+        modelBuilder.Entity<IngredientItem>()
+            .HasOne(x => x.Recipe)
+            .WithMany()
+            .HasForeignKey("RecipeId")
+            .IsRequired();
+                
+        modelBuilder.Entity<Recipe>().HasKey(x => x.Id);
     }
 }
