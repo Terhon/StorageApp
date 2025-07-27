@@ -13,7 +13,6 @@ public class StorageItemCommandService(StorageDbContext context) : IStorageItemC
         
         var entity = new Domain.Entities.StorageItem
         {
-            Id = cmd.ItemTypeId,
             AcquisitionDate = cmd.AcquisitionDate,
             Amount = cmd.Amount,    
             ItemType = itemType,
