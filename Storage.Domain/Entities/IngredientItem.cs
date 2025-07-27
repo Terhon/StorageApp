@@ -6,7 +6,7 @@ public class IngredientItem
     
     public Recipe Recipe { get; set; }
     
-    public ItemType Item { get; set; }
+    public ItemType ItemType { get; set; }
     
     public double Amount { get; set; }
 }
