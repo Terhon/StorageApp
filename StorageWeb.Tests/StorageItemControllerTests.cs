@@ -100,7 +100,7 @@ public class StorageItemControllerTests
 
     [Fact]
     public async Task Create_AddsItemToItemController_WhenValid()
-    {/*
+    {
         var (commandService, queryService, itemTypeQueryService, context) = GetInMemoryStorageWebContext();
         var controller = new StorageItemController(commandService, queryService, itemTypeQueryService);
 
@@ -110,7 +110,8 @@ public class StorageItemControllerTests
 
         Assert.IsType<RedirectToActionResult>(result);
         context.StorageItems.Count().Should().Be(4);
-        context.StorageItems.Should().Contain(newItem);*/
+        context.StorageItems.Should().ContainSingle(i => i.AcquisitionDate == newItem.AcquisitionDate
+            && i.Amount == newItem.Amount && i.ItemType.Id == newItem.ItemId);
     }
 
     [Fact]
@@ -145,7 +146,7 @@ public class StorageItemControllerTests
 
     [Fact]
     public async Task Edit_ModifiesItem_WhenItemExists()
-    {/*TODO
+    {
         var (commandService, queryService, itemTypeQueryService, context) = GetInMemoryStorageWebContext();
         var controller = new StorageItemController(commandService, queryService, itemTypeQueryService);
 
@@ -155,13 +156,19 @@ public class StorageItemControllerTests
         var editedItem = context.StorageItems.First();
         editedItem.Amount = newAmount;
         editedItem.AcquisitionDate = newDate;
-        var result = await controller.Edit(editedItem.Id, editedItem);
+        var result = await controller.Edit(editedItem.Id, new StorageWeb.Models.StorageItem
+        {
+            Id = editedItem.Id,
+            Amount = newAmount,
+            AcquisitionDate = newDate,
+            ItemId = editedItem.ItemType.Id
+        });
 
         Assert.IsType<RedirectToActionResult>(result);
         var item = context.StorageItems.Single(x => x.Id == editedItem.Id);
         item.Should().NotBeNull();
         item.Amount.Should().Be(newAmount);
-        item.AcquisitionDate.Should().Be(newDate);*/
+        item.AcquisitionDate.Should().Be(newDate);
     }
 
     [Fact]
