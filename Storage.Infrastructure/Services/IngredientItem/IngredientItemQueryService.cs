@@ -13,6 +13,7 @@ public class IngredientItemQueryService(StorageDbContext context) : IIngredientI
     {
         var ingredientItem = await context.IngredientItems.AsNoTracking()
             .Include(i => i.ItemType)
+            .Include(i => i.Recipe)
             .FirstOrDefaultAsync(it => it.Id == id);
         
         return ingredientItem?.Map();
@@ -22,6 +23,7 @@ public class IngredientItemQueryService(StorageDbContext context) : IIngredientI
     {
         return await context.IngredientItems.AsNoTracking()
             .Include(i => i.ItemType)
+            .Include(i => i.Recipe)
             .Select(i => i.Map())
             .ToListAsync();
     }

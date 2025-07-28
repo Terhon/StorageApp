@@ -5,25 +5,27 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Storage.Application.IngredientItem.Commands;
+using Storage.Application.IngredientItem.Commands.DTOs;
+using Storage.Application.IngredientItem.Queries;
+using Storage.Application.ItemType.Queries;
+using Storage.Application.Recipe.Queries;
 using StorageWeb.Data;
 using StorageWeb.Models;
 
 namespace StorageWeb.Controllers
 {
-    public class IngredientItemController : Controller
+    public class IngredientItemController(
+        IIngredientItemCommandService commandService,
+        IIngredientItemQueryService queryService,
+        IItemTypeQueryService itemTypeQueryService,
+        IRecipeQueryService recipeQueryService) : Controller
     {
-        private readonly StorageWebContext _context;
-
-        public IngredientItemController(StorageWebContext context)
-        {
-            _context = context;
-        }
-
         // GET: IngredientItem
         public async Task<IActionResult> Index()
         {
-            var storageWebContext = _context.IngredientItems.Include(i => i.Item).Include(i => i.Recipe);
-            return View(await storageWebContext.ToListAsync());
+            var ingredients = await queryService.GetAllIngredients();
+            return View(ingredients.Map());
         }
 
         // GET: IngredientItem/Details/5
@@ -34,10 +36,9 @@ namespace StorageWeb.Controllers
                 return NotFound();
             }
 
-            var ingredientItem = await _context.IngredientItems
-                .Include(i => i.Item)
-                .Include(i => i.Recipe)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var item = await queryService.GetIngredientItemById(id.Value);
+            var ingredientItem = item?.Map();
+
             if (ingredientItem == null)
             {
                 return NotFound();
@@ -47,10 +48,13 @@ namespace StorageWeb.Controllers
         }
 
         // GET: IngredientItem/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["ItemId"] = new SelectList(_context.Item, "Id", "Name");
-            ViewData["RecipeId"] = new SelectList(_context.Recipe, "Id", "Description");
+            var itemTypes = await itemTypeQueryService.GetAllItemTypes();
+            ViewData["ItemId"] = new SelectList(itemTypes, "Id", "Name");
+
+            var recipes = await recipeQueryService.GetAllRecipes();
+            ViewData["RecipeId"] = new SelectList(recipes, "Id", "Description");
             return View();
         }
 
@@ -59,16 +63,20 @@ namespace StorageWeb.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,RecipeId,ItemId,Amount")] IngredientItem ingredientItem)
+        public async Task<IActionResult> Create(IngredientItem ingredientItem)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(ingredientItem);
-                await _context.SaveChangesAsync();
+                await commandService.AddIngredientItem(new CreateIngredientItemCommand(ingredientItem.RecipeId,
+                    ingredientItem.ItemId, ingredientItem.Amount));
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ItemId"] = new SelectList(_context.Item, "Id", "Name", ingredientItem.ItemId);
-            ViewData["RecipeId"] = new SelectList(_context.Recipe, "Id", "Description", ingredientItem.RecipeId);
+
+            var itemTypes = await itemTypeQueryService.GetAllItemTypes();
+            ViewData["ItemId"] = new SelectList(itemTypes, "Id", "Name", ingredientItem.ItemId);
+
+            var recipes = await recipeQueryService.GetAllRecipes();
+            ViewData["RecipeId"] = new SelectList(recipes, "Id", "Description", ingredientItem.RecipeId);
             return View(ingredientItem);
         }
 
@@ -80,13 +88,18 @@ namespace StorageWeb.Controllers
                 return NotFound();
             }
 
-            var ingredientItem = await _context.IngredientItems.FindAsync(id);
+            var item = await queryService.GetIngredientItemById(id.Value);
+            var ingredientItem = item.Map();
             if (ingredientItem == null)
             {
                 return NotFound();
             }
-            ViewData["ItemId"] = new SelectList(_context.Item, "Id", "Name", ingredientItem.ItemId);
-            ViewData["RecipeId"] = new SelectList(_context.Recipe, "Id", "Description", ingredientItem.RecipeId);
+
+            var itemTypes = await itemTypeQueryService.GetAllItemTypes();
+            ViewData["ItemId"] = new SelectList(itemTypes, "Id", "Name", ingredientItem.ItemId);
+
+            var recipes = await recipeQueryService.GetAllRecipes();
+            ViewData["RecipeId"] = new SelectList(recipes, "Id", "Description", ingredientItem.RecipeId);
             return View(ingredientItem);
         }
 
@@ -95,7 +108,7 @@ namespace StorageWeb.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,RecipeId,ItemId,Amount")] IngredientItem ingredientItem)
+        public async Task<IActionResult> Edit(int id, IngredientItem ingredientItem)
         {
             if (id != ingredientItem.Id)
             {
@@ -106,12 +119,16 @@ namespace StorageWeb.Controllers
             {
                 try
                 {
-                    _context.Update(ingredientItem);
-                    await _context.SaveChangesAsync();
+                    await commandService.UpdateIngredientItem(
+                        new UpdateIngredientItemCommand(
+                            id,
+                            ingredientItem.RecipeId,
+                            ingredientItem.ItemId,
+                            ingredientItem.Amount));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!IngredientItemExists(ingredientItem.Id))
+                    if (!await IngredientItemExists(ingredientItem.Id))
                     {
                         return NotFound();
                     }
@@ -120,10 +137,15 @@ namespace StorageWeb.Controllers
                         throw;
                     }
                 }
+
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["ItemId"] = new SelectList(_context.Item, "Id", "Name", ingredientItem.ItemId);
-            ViewData["RecipeId"] = new SelectList(_context.Recipe, "Id", "Description", ingredientItem.RecipeId);
+            
+            var itemTypes = await itemTypeQueryService.GetAllItemTypes();
+            ViewData["ItemId"] = new SelectList(itemTypes, "Id", "Name", ingredientItem.ItemId);
+            
+            var recipes = await recipeQueryService.GetAllRecipes();
+            ViewData["RecipeId"] = new SelectList(recipes, "Id", "Description", ingredientItem.RecipeId);
             return View(ingredientItem);
         }
 
@@ -135,10 +157,8 @@ namespace StorageWeb.Controllers
                 return NotFound();
             }
 
-            var ingredientItem = await _context.IngredientItems
-                .Include(i => i.Item)
-                .Include(i => i.Recipe)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var item = await queryService.GetIngredientItemById(id.Value);
+            var ingredientItem = item.Map();
             if (ingredientItem == null)
             {
                 return NotFound();
@@ -152,19 +172,19 @@ namespace StorageWeb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var ingredientItem = await _context.IngredientItems.FindAsync(id);
+            var ingredientItem = await queryService.GetIngredientItemById(id);
             if (ingredientItem != null)
             {
-                _context.IngredientItems.Remove(ingredientItem);
+                await commandService.DeleteIngredientItem(new DeleteIngredientItemCommand(id));
             }
 
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool IngredientItemExists(int id)
+        private async Task<bool> IngredientItemExists(int id)
         {
-            return _context.IngredientItems.Any(e => e.Id == id);
+            var items = await queryService.GetAllIngredients();
+            return items.Any(e => e.Id == id);
         }
     }
 }

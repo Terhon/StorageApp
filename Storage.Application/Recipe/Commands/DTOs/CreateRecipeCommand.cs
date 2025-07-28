@@ -2,4 +2,4 @@
 
 namespace Storage.Application.Recipe.Commands.DTOs;
 
-public record CreateRecipeCommand(string Name, string Description, List<CreateIngredientItemCommand> Ingredients);
+public record CreateRecipeCommand(string Name, string Description);
