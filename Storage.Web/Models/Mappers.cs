@@ -1,5 +1,6 @@
 ﻿using Storage.Application.IngredientItem.Queries.DTOs;
 using Storage.Application.ItemType.Queries.DTOs;
+using Storage.Application.Recipe.Queries.DTOs;
 using Storage.Application.StorageItem.Queries.DTOs;
 
 namespace StorageWeb.Models;
@@ -64,6 +65,22 @@ public static class Mappers
             Item = item.ItemType.Map(),
             RecipeId = item.Recipe.Id
             //Recipe = item,
+        };
+    }
+
+    public static IEnumerable<Recipe> Map(this IEnumerable<RecipeDTO> items)
+    {
+        return items.Select(i => i.Map());
+    }
+    
+    public static Recipe Map(this RecipeDTO item)
+    {
+        return new Recipe
+        {
+            Id = item.Id,
+            Name = item.Name,
+            Description = item.Description,
+            Ingredients = item.Ingredients.Map().ToList()
         };
     }
 }

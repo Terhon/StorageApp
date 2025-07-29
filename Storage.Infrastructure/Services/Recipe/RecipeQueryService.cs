@@ -12,6 +12,7 @@ public class RecipeQueryService(StorageDbContext context) : IRecipeQueryService
     {
         var recipe = await context.Recipes.AsNoTracking()
             .Include(r => r.Ingredients)
+            .ThenInclude(r => r.ItemType)
             .FirstOrDefaultAsync(it => it.Id == id);
         if (recipe == null)
             return null;

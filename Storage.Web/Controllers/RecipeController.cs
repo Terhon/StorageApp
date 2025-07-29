@@ -1,16 +1,23 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using StorageWeb.Data;
+using Storage.Application.IngredientItem.Commands;
+using Storage.Application.IngredientItem.Commands.DTOs;
+using Storage.Application.Recipe.Commands;
+using Storage.Application.Recipe.Commands.DTOs;
+using Storage.Application.Recipe.Queries;
 using StorageWeb.Models;
 
 namespace StorageWeb.Controllers
 {
-    public class RecipeController(StorageWebContext context) : Controller
+    public class RecipeController(
+        IRecipeCommandService commandService, 
+        IRecipeQueryService queryService,
+        IIngredientItemCommandService ingredientItemCommandService) : Controller
     {
         // GET: Recipe
         public async Task<IActionResult> Index()
         {
-            return View(await context.Recipe.ToListAsync());
+            var recipes = await queryService.GetAllRecipes();
+            return View(recipes.Map());
         }
 
         // GET: Recipe/Details/5
@@ -21,16 +28,13 @@ namespace StorageWeb.Controllers
                 return NotFound();
             }
 
-            var recipe = await context.Recipe
-                .Include(r => r.Ingredients)
-                .ThenInclude(i => i.Item)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var recipe = await queryService.GetRecipeById(id.Value);
             if (recipe == null)
             {
                 return NotFound();
             }
 
-            return View(recipe);
+            return View(recipe.Map());
         }
 
         // GET: Recipe/Create
@@ -49,11 +53,11 @@ namespace StorageWeb.Controllers
             if (!ModelState.IsValid)
                 return View(recipe);
 
+            var id = await commandService.AddRecipe(new CreateRecipeCommand(recipe.Name, recipe.Description));
+            
             foreach (var ingredient in recipe.Ingredients)
-                context.Add(ingredient);
+                await ingredientItemCommandService.AddIngredientItem(new CreateIngredientItemCommand(id, ingredient.ItemId ,ingredient.Amount));
 
-            context.Add(recipe);
-            await context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
@@ -65,17 +69,14 @@ namespace StorageWeb.Controllers
                 return NotFound();
             }
 
-            var recipe = await context.Recipe
-                .Include(r => r.Ingredients)
-                .ThenInclude(i => i.Item)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var recipe = await queryService.GetRecipeById(id.Value);
 
             if (recipe == null)
             {
                 return NotFound();
             }
 
-            return View(recipe);
+            return View(recipe.Map());
         }
 
         // POST: Recipes/Edit/5
@@ -89,16 +90,12 @@ namespace StorageWeb.Controllers
             if (!ModelState.IsValid)
                 return View(updatedRecipe);
 
-            var existingRecipe = await context.Recipe
-                .Include(r => r.Ingredients)
-                .FirstOrDefaultAsync(r => r.Id == id);
-
+            var existingRecipe = await queryService.GetRecipeById(id);
             if (existingRecipe == null)
                 return NotFound();
 
-            existingRecipe.Name = updatedRecipe.Name;
-            existingRecipe.Description = updatedRecipe.Description;
-
+            await commandService.UpdateRecipe(new UpdateRecipeCommand(existingRecipe.Id, updatedRecipe.Name, updatedRecipe.Description));
+            
             var updatedIngredientIds = updatedRecipe.Ingredients.Select(i => i.Id).ToList();
             var ingredientsToRemove = existingRecipe.Ingredients
                 .Where(i => !updatedIngredientIds.Contains(i.Id))
@@ -106,8 +103,8 @@ namespace StorageWeb.Controllers
 
             foreach (var ingredient in ingredientsToRemove)
             {
-                existingRecipe.Ingredients.Remove(ingredient);
-                context.IngredientItems.Remove(ingredient);
+                //existingRecipe.Ingredients.Remove(ingredient);
+                await ingredientItemCommandService.DeleteIngredientItem(new DeleteIngredientItemCommand(ingredient.Id));
             }
 
             // Add or update ingredients
@@ -116,26 +113,15 @@ namespace StorageWeb.Controllers
                 var existingIngredient = existingRecipe.Ingredients.FirstOrDefault(i => i.Id == ingredient.Id);
                 if (existingIngredient == null)
                 {
-                    existingRecipe.Ingredients.Add(ingredient);
+                    //existingRecipe.Ingredients.Add(ingredient);
+                    await ingredientItemCommandService.AddIngredientItem(new CreateIngredientItemCommand(existingRecipe.Id, ingredient.ItemId, ingredient.Amount));
                 }
                 else
                 {
-                    context.Entry(existingIngredient).CurrentValues.SetValues(ingredient);
+                    await ingredientItemCommandService.UpdateIngredientItem(
+                        new UpdateIngredientItemCommand(existingIngredient.Id, existingRecipe.Id, ingredient.ItemId, ingredient.Amount));
+                    //context.Entry(existingIngredient).CurrentValues.SetValues(ingredient);
                 }
-            }
-
-            try
-            {
-                await context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!RecipeExists(id))
-                {
-                    return NotFound();
-                }
-
-                throw;
             }
 
             return RedirectToAction(nameof(Index));
@@ -149,14 +135,13 @@ namespace StorageWeb.Controllers
                 return NotFound();
             }
 
-            var recipe = await context.Recipe
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var recipe = await queryService.GetRecipeById(id.Value);
             if (recipe == null)
             {
                 return NotFound();
             }
 
-            return View(recipe);
+            return View(recipe.Map());
         }
 
         // POST: Recipe/Delete/5
@@ -164,34 +149,13 @@ namespace StorageWeb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var recipe = await context.Recipe.FindAsync(id);
+            var recipe = await queryService.GetRecipeById(id);
             if (recipe != null)
             {
-                context.Recipe.Remove(recipe);
+                await commandService.DeleteRecipe(new DeleteRecipeCommand(id));
             }
 
-            await context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool RecipeExists(int id)
-        {
-            return context.Recipe.Any(e => e.Id == id);
-        }
-
-        public async Task<IActionResult> GetIngredients(string search)
-        {
-            var ingredients = await context.Item
-                .Where(i => i.Name.Contains(search))
-                .Select(i => new
-                {
-                    id = i.Id,
-                    name = i.Name,
-                    unit = i.Unit
-                })
-                .ToListAsync();
-
-            return Json(ingredients);
         }
     }
 }

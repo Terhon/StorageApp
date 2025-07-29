@@ -7,7 +7,7 @@ namespace Storage.Infrastructure.Services.Recipe;
 
 public class RecipeCommandService(StorageDbContext context): IRecipeCommandService
 {
-    public async Task AddRecipe(CreateRecipeCommand cmd)
+    public async Task<int> AddRecipe(CreateRecipeCommand cmd)
     {
         var entity = new Domain.Entities.Recipe
         {
@@ -16,6 +16,8 @@ public class RecipeCommandService(StorageDbContext context): IRecipeCommandServi
         };
         await context.Recipes.AddAsync(entity);
         await context.SaveChangesAsync();
+        
+        return entity.Id;
     }
 
     public async Task UpdateRecipe(UpdateRecipeCommand cmd)
