@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +6,6 @@ using Storage.Application.IngredientItem.Commands.DTOs;
 using Storage.Application.IngredientItem.Queries;
 using Storage.Application.ItemType.Queries;
 using Storage.Application.Recipe.Queries;
-using StorageWeb.Data;
 using StorageWeb.Models;
 
 namespace StorageWeb.Controllers

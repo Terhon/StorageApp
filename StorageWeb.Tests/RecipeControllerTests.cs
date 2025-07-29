@@ -11,8 +11,6 @@ using Storage.Infrastructure.Data;
 using Storage.Infrastructure.Services.IngredientItem;
 using Storage.Infrastructure.Services.Recipe;
 using StorageWeb.Controllers;
-using StorageWeb.Data;
-using IngredientItem = StorageWeb.Models.IngredientItem;
 using Recipe = StorageWeb.Models.Recipe;
 
 namespace StorageApp.UnitTests;
