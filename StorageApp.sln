@@ -10,6 +10,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Storage.Application", "Stor
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Storage.Infrastructure", "Storage.Infrastructure\Storage.Infrastructure.csproj", "{A3DCFEDB-2D99-4D36-9D2A-18C26C1ABD67}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Storage.Api", "Storage.Api\Storage.Api.csproj", "{76E36BCE-639C-4D6E-B927-B31E2EDE130F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,5 +38,9 @@ Global
 		{A3DCFEDB-2D99-4D36-9D2A-18C26C1ABD67}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A3DCFEDB-2D99-4D36-9D2A-18C26C1ABD67}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A3DCFEDB-2D99-4D36-9D2A-18C26C1ABD67}.Release|Any CPU.Build.0 = Release|Any CPU
+		{76E36BCE-639C-4D6E-B927-B31E2EDE130F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{76E36BCE-639C-4D6E-B927-B31E2EDE130F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{76E36BCE-639C-4D6E-B927-B31E2EDE130F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{76E36BCE-639C-4D6E-B927-B31E2EDE130F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
