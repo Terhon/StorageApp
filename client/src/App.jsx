@@ -1,9 +1,9 @@
 import React from 'react';
-import {ItemTypesFeature} from "./features/itemTypes";
+import {AppRouting} from "./AppRouting";
 
 
 function App() {
-    return <ItemTypesFeature />;   
+    return <AppRouting />;   
 }
 
 export default App;
