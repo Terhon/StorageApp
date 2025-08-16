@@ -6,11 +6,12 @@ export function ItemTypesList({ itemsTypes = [], onDelete }) {
     }
     
     return (
-        <ul>
+        <ul className="space-y-3"> 
             {itemsTypes.map(i => (
                 <li key={i.id}>
-                    {i.name} [{i.unit}]
-                    <button onClick={() => onDelete(i.id)}>Delete</button>
+                    <span className="font-semibold">{i.name}</span>
+                    <span className="text-sm text-gray-500 ml-2">[{i.unit}]</span>
+                    <button className="btn btn-error btn-sm" onClick={() => onDelete(i.id)}>Delete</button>
                 </li>
             ))}
         </ul>

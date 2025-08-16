@@ -1,9 +1,8 @@
-import React from 'react';
-import {AppRouting} from "./AppRouting";
-
+import './App.css'
+import {AppRouting} from "./AppRouting.jsx";
 
 function App() {
-    return <AppRouting />;   
+    return <AppRouting />;
 }
 
-export default App;
+export default App
