@@ -5,10 +5,23 @@ import React from "react";
 export function AppRouting() {
     return (
         <Router>
-            <div className="container">
-                <nav>
-                    <Link to="/">Home</Link>
-                    <Link to="/item-types">Item Types</Link>
+            <div className="container mx-auto p-6">
+                <nav className="navbar bg-base-200 rounded-xl shadow mb-6">
+                    <div className="flex-1">
+                        <Link to="/" className="btn btn-ghost normal-case text-xl">
+                            StorageApp
+                        </Link>
+                    </div>
+                    <div className="flex-none">
+                        <ul className="menu menu-horizontal px-1">
+                            <li>
+                                <Link to="/" className="btn btn-ghost normal-case text-xl">Home</Link>
+                            </li>
+                            <li>
+                                <Link to="/item-types" className="btn btn-ghost normal-case text-xl">Item Types</Link>
+                            </li>
+                        </ul>
+                    </div>
                 </nav>
 
                 <Routes>
