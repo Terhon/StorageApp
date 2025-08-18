@@ -5,6 +5,8 @@ using Storage.Application.StorageItem.Queries;
 
 namespace Storage.Api.Controllers;
 
+[ApiController]
+[Route("api/[controller]")]
 public class StorageItemController(IStorageItemCommandService commandService, IStorageItemQueryService queryService): ControllerBase
 {
     [HttpGet]
