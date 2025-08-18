@@ -1,6 +1,7 @@
 ﻿import {BrowserRouter as Router, Link, Route, Routes} from "react-router-dom";
 import {ItemTypesFeature} from "./features/itemTypes";
 import React from "react";
+import {StorageItemsFeature} from "./features/storageItems/index.jsx";
 
 export function AppRouting() {
     return (
@@ -20,6 +21,9 @@ export function AppRouting() {
                             <li>
                                 <Link to="/item-types" className="btn btn-ghost normal-case text-xl">Item Types</Link>
                             </li>
+                            <li>
+                                <Link to="/storage-items" className="btn btn-ghost normal-case text-xl">Storage Items</Link>
+                            </li>
                         </ul>
                     </div>
                 </nav>
@@ -27,6 +31,7 @@ export function AppRouting() {
                 <Routes>
                     <Route path="/" element={<div>Home</div>}/>
                     <Route path="/item-types" element={<ItemTypesFeature/>}/>
+                    <Route path="/storage-items" element={<StorageItemsFeature/>}/>
                 </Routes>
             </div>
 

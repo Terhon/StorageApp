@@ -5,13 +5,13 @@ export function useItemTypes() {
     const [items, setItems] = useState([]);
 
     useEffect(() => {
-        api.getItems().then(res => setItems(res.data ?? []));
+        api.getItemTypes().then(res => setItems(res.data ?? []));
     }, []);
 
-    const reload = () => api.getItems().then(res => setItems(res.data ?? []));
+    const reload = () => api.getItemTypes().then(res => setItems(res.data ?? []));
 
     const create = async (data) => {
-        const res = await api.createItem(data);
+        const res = await api.createItemTypes(data);
         if (res.status === 201)
         {
             reload();
@@ -21,7 +21,7 @@ export function useItemTypes() {
     };
 
     const remove = async (id) => {
-        const res = await api.deleteItem(id);
+        const res = await api.deleteItemTypes(id);
         if (res.status === 204) {
             reload();
         } else {
