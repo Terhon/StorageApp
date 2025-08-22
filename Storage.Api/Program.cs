@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Storage.Api;
 using Storage.Infrastructure;
 using Storage.Infrastructure.Data;
 
@@ -8,6 +9,7 @@ builder.Services.AddDbContext<StorageDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("StorageDbContext") ?? throw new InvalidOperationException("Connection string 'StorageDbContext' not found.")));
 
 builder.Services.AddControllers();
+builder.Services.AddSignalR();
 
 builder.AddInfrastructure();
 
@@ -20,23 +22,28 @@ builder.Services.AddCors(options =>
     {
         policy.WithOrigins("http://localhost:3000")
             .AllowAnyHeader()
-            .AllowAnyMethod();
+            .AllowAnyMethod()
+            .AllowCredentials();
     });
 });
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
+app.UseRouting();
+
+app.UseCors("AllowReact");
+
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 
-app.UseCors("AllowReact");
+
+app.MapHub<TestHub>("/testhub");
 
 app.Run();

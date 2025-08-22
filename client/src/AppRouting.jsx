@@ -2,6 +2,7 @@
 import {ItemTypesFeature} from "./features/itemTypes";
 import React from "react";
 import {StorageItemsFeature} from "./features/storageItems/index.jsx";
+import {ChatFeature} from "./features/chat/ChatFeature.jsx";
 
 export function AppRouting() {
     return (
@@ -29,7 +30,7 @@ export function AppRouting() {
                 </nav>
 
                 <Routes>
-                    <Route path="/" element={<div>Home</div>}/>
+                    <Route path="/" element={<ChatFeature/>}/>
                     <Route path="/item-types" element={<ItemTypesFeature/>}/>
                     <Route path="/storage-items" element={<StorageItemsFeature/>}/>
                 </Routes>
