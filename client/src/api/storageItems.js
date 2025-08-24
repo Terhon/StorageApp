@@ -1,6 +1,4 @@
-﻿import axios from 'axios';
-
-const API = axios.create({ baseURL: 'https://localhost:44327/api' });
+﻿import {API} from "./common.jsx";
 
 export const getStorageItems = () => API.get('/StorageItem');
 export const getStorageItem = (id) => API.get(`/StorageItem/${id}`);

@@ -3,6 +3,7 @@ import {ItemTypesFeature} from "./features/itemTypes";
 import React from "react";
 import {StorageItemsFeature} from "./features/storageItems/index.jsx";
 import {ChatFeature} from "./features/chat/ChatFeature.jsx";
+import Login from "./Login.jsx";
 
 export function AppRouting() {
     return (
@@ -25,6 +26,9 @@ export function AppRouting() {
                             <li>
                                 <Link to="/storage-items" className="btn btn-ghost normal-case text-xl">Storage Items</Link>
                             </li>
+                            <li>
+                                <Link to="/login" className="btn btn-ghost normal-case text-sm">Login</Link>
+                            </li>
                         </ul>
                     </div>
                 </nav>
@@ -33,6 +37,7 @@ export function AppRouting() {
                     <Route path="/" element={<ChatFeature/>}/>
                     <Route path="/item-types" element={<ItemTypesFeature/>}/>
                     <Route path="/storage-items" element={<StorageItemsFeature/>}/>
+                    <Route path="/login" element={<Login/>}/>
                 </Routes>
             </div>
 

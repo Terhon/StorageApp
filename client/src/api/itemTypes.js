@@ -1,6 +1,4 @@
-﻿import axios from 'axios';
-
-const API = axios.create({ baseURL: 'https://localhost:44327/api' });
+﻿import {API} from "./common.jsx";
 
 export const getItemTypes = () => API.get('/itemType');
 export const createItemTypes = (item) => API.post('/itemType', item);
