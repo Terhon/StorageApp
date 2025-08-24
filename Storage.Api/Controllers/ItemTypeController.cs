@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Storage.Application.ItemType.Commands;
 using Storage.Application.ItemType.Commands.DTOs;
 using Storage.Application.ItemType.Queries;
@@ -10,6 +11,7 @@ namespace Storage.Api.Controllers;
 public class ItemTypeController(IItemTypeCommandService commandService, IItemTypeQueryService queryService): ControllerBase
 {
     [HttpGet]
+    [Authorize]
     public async Task<IActionResult> Get()
     {
         var items = await queryService.GetAllItemTypes();
@@ -17,6 +19,7 @@ public class ItemTypeController(IItemTypeCommandService commandService, IItemTyp
     }
 
     [HttpPost]
+    [Authorize]
     public async Task<IActionResult> Post([FromBody]CreateItemTypeCommand itemType)
     {
         await commandService.AddItemType(itemType);
@@ -24,6 +27,7 @@ public class ItemTypeController(IItemTypeCommandService commandService, IItemTyp
     }
 
     [HttpDelete("{id:int}")]
+    [Authorize]
     public async Task<IActionResult> Delete(int id)
     {
         await commandService.DeleteItemType(new DeleteItemTypeCommand(id));
