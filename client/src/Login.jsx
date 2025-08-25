@@ -5,7 +5,6 @@ export default function Login() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [token, setToken] = useState(localStorage.getItem("jwt") || "");
-    const [data, setData] = useState(null);
 
     const login = async () => {
         try {
@@ -57,15 +56,6 @@ export default function Login() {
                     </button>
                 </div>
             )}
-
-            <div className="mt-4">
-                <h4>Protected Data:</h4>
-                {data ? (
-                    <pre className="bg-gray-100 p-2 rounded">{JSON.stringify(data, null, 2)}</pre>
-                ) : (
-                    <p>No data yet.</p>
-                )}
-            </div>
         </div>
     );
 }

@@ -4,6 +4,7 @@ import React from "react";
 import {StorageItemsFeature} from "./features/storageItems/index.jsx";
 import {ChatFeature} from "./features/chat/ChatFeature.jsx";
 import Login from "./Login.jsx";
+import {ProtectedRoute} from "./auth.jsx";
 
 export function AppRouting() {
     return (
@@ -35,8 +36,8 @@ export function AppRouting() {
 
                 <Routes>
                     <Route path="/" element={<ChatFeature/>}/>
-                    <Route path="/item-types" element={<ItemTypesFeature/>}/>
-                    <Route path="/storage-items" element={<StorageItemsFeature/>}/>
+                    <Route path="/item-types" element={<ProtectedRoute><ItemTypesFeature/></ProtectedRoute>}/>
+                    <Route path="/storage-items" element={<ProtectedRoute><StorageItemsFeature/></ProtectedRoute>}/>
                     <Route path="/login" element={<Login/>}/>
                 </Routes>
             </div>
