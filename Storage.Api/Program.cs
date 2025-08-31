@@ -4,6 +4,7 @@ using Storage.Api;
 using Storage.Infrastructure;
 using Storage.Infrastructure.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -50,7 +51,16 @@ builder.Services
         };
     });
 
+builder.Services.AddIdentityCore<IdentityUser>()
+    .AddRoles<IdentityRole>()
+    .AddEntityFrameworkStores<StorageDbContext>();
+
+
+
 builder.Services.AddAuthorization();
+
+builder.Logging.AddConsole().AddDebug();
+builder.Logging.SetMinimumLevel(LogLevel.Debug);
 
 var app = builder.Build();
 
