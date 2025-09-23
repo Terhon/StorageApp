@@ -33,6 +33,7 @@ export default function AddStorageItemForm({ onSubmit, onCancel }) {
 
             <input
                 type="date"
+                aria-label="Acquisition Date"
                 value={form.acquisitionDate}
                 onChange={(e) => setForm({ ...form, acquisitionDate: e.target.value })}
                 className="input input-bordered w-full"
@@ -41,6 +42,7 @@ export default function AddStorageItemForm({ onSubmit, onCancel }) {
 
             <select
                 value={form.itemTypeId}
+                aria-label="ItemType"
                 onChange={(e) => setForm({ ...form, itemTypeId: e.target.value })}
                 className="select select-bordered w-full"
                 required
