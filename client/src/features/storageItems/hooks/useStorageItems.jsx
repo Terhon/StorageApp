@@ -14,7 +14,7 @@ export function useStorageItems() {
         const res = await api.createStorageItem(data);
         if (res.status === 201)
         {
-            reload();
+            await reload();
         } else {
             alert("Failed to add item");
         }
@@ -24,7 +24,7 @@ export function useStorageItems() {
         const res = await api.patchStorageItem(data);
         if (res.status === 201)
         {
-            reload();
+            await reload();
         } else {
             alert("Failed to patch item");
         }
@@ -33,7 +33,7 @@ export function useStorageItems() {
     const remove = async (id) => {
         const res = await api.deleteStorageItem(id);
         if (res.status === 204) {
-            reload();
+            await reload();
         } else {
             alert("Failed to delete item");
         }
